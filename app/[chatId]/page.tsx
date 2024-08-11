@@ -2,7 +2,7 @@
 
 import { ChatTextarea } from "@/components/ChatTextarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState } from "react";
+import React, { useState } from "react";
 
 type Props = {};
 
@@ -59,17 +59,17 @@ const testList = [
 function Page({}: Props) {
   const [chatHistory, setChatHistory] = useState([{ type: "", text: "" }]);
 
+  console.log("chatHistory: ", chatHistory);
+
   return (
     <div className="mx-auto flex h-screen max-w-screen-xl flex-col bg-slate-950 px-2">
       <div className="py-6 text-center">AI Chat Agent</div>
       <ScrollArea className="flex-1 md:px-6">
-        <div className="flex flex-col gap-8 overflow-y-auto">
+        <div className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line">
           {chatHistory.map((item, i) => (
-            <>
-              {}
+            <React.Fragment key={`text-${i}`}>
               {item.type && item.text && (
                 <p
-                  key={`text-${i}`}
                   className={`${
                     item.type === "answer"
                       ? "ml-auto bg-slate-800"
@@ -79,11 +79,10 @@ function Page({}: Props) {
                   {item.text}
                 </p>
               )}
-            </>
+            </React.Fragment>
           ))}
         </div>
       </ScrollArea>
-      {/* <div className="h-20 py-3">input or textarea</div> */}
       <ChatTextarea setChatHistory={setChatHistory} />
     </div>
   );
