@@ -13,11 +13,11 @@ const NotFound = () => {
               404
             </h1>
             <p className="mb-4 text-3xl font-bold tracking-tight text-slate-100 md:text-4xl">
-              Something's missing.
+              Something&apos;s missing.
             </p>
             <p className="mb-4 text-lg font-light text-slate-400">
-              Sorry, we can't find that page. You'll find lots to explore on the
-              home page.{" "}
+              Sorry, we can&apos;t find that page. You&apos;ll find lots to
+              explore on the home page.
             </p>
             <Button asChild>
               <Link href="/">Back to Homepage</Link>
