@@ -1,8 +1,12 @@
 "use client";
+import { getLogtoContext, signIn, signOut } from "@logto/next/server-actions";
+import React, { useState } from "react";
 
 import { ChatTextarea } from "@/components/ChatTextarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import React, { useState } from "react";
+import SignOut from "../auth/SignOut";
+import { logtoConfig } from "@/lib/logto/logto";
+import SignIn from "../auth/SignIn";
 
 type Props = {};
 
@@ -59,11 +63,16 @@ const testList = [
 function Page({}: Props) {
   const [chatHistory, setChatHistory] = useState([{ type: "", text: "" }]);
 
-  console.log("chatHistory: ", chatHistory);
+  // const { isAuthenticated, claims } = await getLogtoContext(logtoConfig);
+
+  // console.log("chatHistory: ", chatHistory);
 
   return (
-    <div className="mx-auto flex h-screen max-w-screen-xl flex-col bg-slate-950 px-2">
-      <div className="py-6 text-center">AI Chat Agent</div>
+    // <div className="mx-auto flex h-screen max-w-screen-xl flex-col bg-slate-950 px-2">
+    //   <div className="py-6 text-center">
+    //     AI Chat Agent
+    //   </div>
+    <div>
       <ScrollArea className="flex-1 md:px-6">
         <div className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line">
           {chatHistory.map((item, i) => (
