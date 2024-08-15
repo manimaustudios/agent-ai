@@ -1,18 +1,20 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 type Props = {
   onSignOut: () => Promise<void>;
 };
 
 const SignOut = ({ onSignOut }: Props) => {
   return (
-    <button
+    <Button
       onClick={() => {
         onSignOut();
       }}
     >
       Sign Out
-    </button>
+    </Button>
   );
 };
 
