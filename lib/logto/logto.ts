@@ -1,8 +1,11 @@
+import { UserScope } from "@logto/next";
+
 export const logtoConfig = {
-  endpoint: "https://7vgfzz.logto.app/",
-  appId: "2qqwqc10imvatdb90g59v",
-  appSecret: "HM8BXPTc6YnAq6rhR71YNE9u6BOocB7V",
+  endpoint: "https://n5gxlg.logto.app/",
+  appId: "5vy96pjwupntqtf0nvz83",
+  appSecret: "0kA05be0Da7rbBdQmBJiYy08lmXm79V7",
   baseUrl: "http://localhost:3000", // Change to your own base URL
-  cookieSecret: "94y6oEHshiUTajLJWrZpXmtQqNVieMbf", // Auto-generated 32 digit secret
+  cookieSecret: "TMpDBdKnVmfVQmcWV3AczYJT8yKyyFrs", // Auto-generated 32 digit secret
   cookieSecure: process.env.NODE_ENV === "production",
+  scopes: [UserScope.Email, UserScope.Profile],
 };

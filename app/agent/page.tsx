@@ -1,98 +1,14 @@
-"use client";
-import { getLogtoContext, signIn, signOut } from "@logto/next/server-actions";
-import React, { useState } from "react";
+import Sidebar from "@/components/Sidebar";
+import Chat from "@/components/Chat";
 
-import { ChatTextarea } from "@/components/ChatTextarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import SignOut from "../auth/SignOut";
-import { logtoConfig } from "@/lib/logto/logto";
-import SignIn from "../auth/SignIn";
-
-type Props = {};
-
-// in state everything
-// be careful of obects and updating state
-
-const testList = [
-  {
-    type: "question",
-    text: "What is the capital of France?",
-  },
-  {
-    type: "answer",
-    text: "This is Paris.",
-  },
-  {
-    type: "question",
-    text: "What is the capital of France? What is the capital of France? What is the capital of France? What is the capital of France?",
-  },
-  {
-    type: "answer",
-    text: "This is Paris. This is Paris. This is Paris. This is Paris. This is Paris. This is Paris. This is Paris.",
-  },
-  {
-    type: "answer",
-    text: "This is Paris.",
-  },
-  {
-    type: "question",
-    text: "What is the capital of France? What is the capital of France? What is the capital of France? What is the capital of France?",
-  },
-  {
-    type: "answer",
-    text: "This is Paris. This is Paris. This is Paris. This is Paris. This is Paris. This is Paris. This is Paris.",
-  },
-  {
-    type: "answer",
-    text: "This is Paris.",
-  },
-  {
-    type: "question",
-    text: "What is the capital of France? What is the capital of France? What is the capital of France? What is the capital of France?",
-  },
-  {
-    type: "answer",
-    text: "This is Paris. This is Paris. This is Paris. This is Paris. This is Paris. This is Paris. This is Paris.",
-  },
-  {
-    type: "answer",
-    text: "This is Paris.",
-  },
-];
-
-function Page({}: Props) {
-  const [chatHistory, setChatHistory] = useState([{ type: "", text: "" }]);
-
-  // const { isAuthenticated, claims } = await getLogtoContext(logtoConfig);
-
-  // console.log("chatHistory: ", chatHistory);
+async function Page() {
+  // const welcomeMessage = await getWelcomeMessages() // need default message
+  const welcomeMessage = "Hi, how are you today?";
 
   return (
-    // <div className="mx-auto flex h-screen max-w-screen-xl flex-col bg-slate-950 px-2">
-    //   <div className="py-6 text-center">
-    //     AI Chat Agent
-    //   </div>
-    <div>
-      <ScrollArea className="flex-1 md:px-6">
-        <div className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line">
-          {chatHistory.map((item, i) => (
-            <React.Fragment key={`text-${i}`}>
-              {item.type && item.text && (
-                <p
-                  className={`${
-                    item.type === "answer"
-                      ? "ml-auto bg-slate-800"
-                      : "mr-auto bg-slate-600"
-                  } inline-block max-w-[80%] rounded-md p-3 md:max-w-[65%]`}
-                >
-                  {item.text}
-                </p>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </ScrollArea>
-      <ChatTextarea setChatHistory={setChatHistory} />
+    <div className="flex h-screen">
+      <Sidebar />
+      <Chat welcomeMessage={welcomeMessage} />
     </div>
   );
 }

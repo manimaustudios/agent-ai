@@ -1,18 +1,20 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 type Props = {
   onSignIn: () => Promise<void>;
 };
 
 const SignIn = ({ onSignIn }: Props) => {
   return (
-    <button
+    <Button
       onClick={() => {
         onSignIn();
       }}
     >
       Sign In
-    </button>
+    </Button>
   );
 };
 
