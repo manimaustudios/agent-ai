@@ -12,5 +12,3 @@ export const logtoConfig = {
   cookieSecure: process.env.NODE_ENV === "production",
   scopes: [UserScope.Email, UserScope.Profile],
 };
-
-console.log("Logto config:", logtoConfig);
