@@ -1,12 +1,13 @@
 import { FaChevronLeft, FaTimes } from "react-icons/fa";
-import { FaRegMessage } from "react-icons/fa6";
 import AccesButton from "./AccesButton";
 import { auth } from "@/lib/logto/auth";
 import ChatHistory from "./ChatHistory";
-import { Button } from "./ui/button";
+import PaymentButton from "./PaymentButton";
+import NewChatButton from "./NewChatButton";
+import CreateUserButton from "./CreateUserButton";
 
 async function Sidebar() {
-  const { isAuthenticated } = await auth();
+  const { isAuthenticated, userId } = await auth();
 
   return (
     <div className="flex w-56 flex-col bg-slate-900 p-2">
@@ -15,18 +16,13 @@ async function Sidebar() {
           Logo
           <FaChevronLeft className="size-4" />
         </div>
-        <Button
-          className="flex items-center justify-center gap-2"
-          variant="ghost"
-          size="sm"
-        >
-          New Chat
-          <FaRegMessage className="size-3" />
-        </Button>
+        <NewChatButton />
 
         <ChatHistory />
       </div>
-      <div className="mt-auto">
+      <div className="mt-auto space-y-2">
+        <CreateUserButton userId={userId} />
+        <PaymentButton userId={userId} />
         <AccesButton isAuth={isAuthenticated} />
       </div>
     </div>

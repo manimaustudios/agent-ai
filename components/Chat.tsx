@@ -44,14 +44,12 @@ function Chat({ welcomeMessage }: ChatProps) {
     setChatHistory([welcomeText], chatType, sessionId);
   };
 
-  console.log("chatHistory: ", chatHistory);
-
   return (
     <>
       <div className="mx-auto flex w-full max-w-screen-xl flex-col bg-slate-950 px-2">
         <div className="py-6 text-center">AI Chat Agent</div>
 
-        {chatHistory.length > 0 || pickedChatType ? (
+        {chatHistory.length > 0 ? (
           // Chat interface
           <ScrollArea className="flex-1 md:px-6">
             <div className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line">
@@ -84,6 +82,7 @@ function Chat({ welcomeMessage }: ChatProps) {
                 <button className="relative size-36 rounded-full focus:outline-none">
                   <Image
                     alt=""
+                    priority
                     src={imgSrc}
                     fill
                     className="absoulute z-0 rounded-full object-cover opacity-60 hover:opacity-80"

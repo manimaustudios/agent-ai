@@ -9,6 +9,7 @@ type Props = {
 const SignOut = ({ onSignOut }: Props) => {
   return (
     <Button
+      variant="secondary"
       onClick={() => {
         onSignOut();
       }}

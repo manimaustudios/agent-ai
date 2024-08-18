@@ -25,6 +25,7 @@ interface ChatContextProps {
     messages: ChatMessage[],
     chatType: string,
     sessionId: string,
+    updateLocalStorage?: boolean,
   ) => void;
   loadChatHistory: (chatType: string, sessionId: string) => void;
   deleteChatHistory: (chatType: string, sessionId: string) => void;
@@ -79,10 +80,16 @@ export function ChatProvider({ children }: ChatProviderProps) {
     messages: ChatMessage[],
     chatType: string,
     sessionId: string,
+    updateLocalStorage: boolean = true,
   ) => {
     setChatHistoryState(messages);
     // Save the updated chat history to localStorage
-    localStorage.setItem(`${chatType}-${sessionId}`, JSON.stringify(messages));
+    if (updateLocalStorage) {
+      localStorage.setItem(
+        `${chatType}-${sessionId}`,
+        JSON.stringify(messages),
+      );
+    }
   };
 
   const loadChatHistory = (chatType: string, sessionId: string) => {
