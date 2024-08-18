@@ -2,6 +2,8 @@
 
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 // import { CreateTransactionParams } from "@/types";
 // import { connectToDatabase } from "../database";
@@ -53,3 +55,37 @@ export async function checkoutPayment(userId: string | null) {
 //     handleError(error);
 //   }
 // }
+
+interface SubscriptionUpdate {
+  status?: string;
+  lastPaymentDate?: string;
+  amountPaid?: number;
+  currency?: string;
+  startDate?: string;
+  plan?: string | null;
+  nextBillingDate?: string;
+  endDate?: string;
+}
+
+async function updateSubscription(
+  customerId: string | null,
+  data: SubscriptionUpdate,
+) {
+  try {
+    if (!customerId) {
+      throw new Error("Customer ID is missing.");
+    }
+    const userDocRef = doc(db, "users", customerId);
+    await updateDoc(userDocRef, {
+      subscription: {
+        ...data,
+      },
+    });
+    console.log("User document updated successfully.");
+  } catch (error) {
+    console.error("Error updating user document:", error);
+    throw new Error("Failed to update user document");
+  }
+}
+
+export default updateSubscription;

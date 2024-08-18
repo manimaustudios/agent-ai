@@ -1,9 +1,8 @@
 /* eslint-disable camelcase */
 // import { createTransaction } from "@/lib/actions/transaction.action";
+import updateSubscription from "@/lib/actions/transaction";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase"; // Import your Firestore instance
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
@@ -100,37 +99,3 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ message: "OK" });
 }
-
-interface SubscriptionUpdate {
-  status?: string;
-  lastPaymentDate?: string;
-  amountPaid?: number;
-  currency?: string;
-  startDate?: string;
-  plan?: string | null;
-  nextBillingDate?: string;
-  endDate?: string;
-}
-
-async function updateSubscription(
-  customerId: string | null,
-  data: SubscriptionUpdate,
-) {
-  try {
-    if (!customerId) {
-      throw new Error("Customer ID is missing.");
-    }
-    const userDocRef = doc(db, "users", customerId);
-    await updateDoc(userDocRef, {
-      subscription: {
-        ...data,
-      },
-    });
-    console.log("User document updated successfully.");
-  } catch (error) {
-    console.error("Error updating user document:", error);
-    throw new Error("Failed to update user document");
-  }
-}
-
-export default updateSubscription;
