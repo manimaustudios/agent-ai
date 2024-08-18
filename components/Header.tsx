@@ -1,12 +1,10 @@
-import { getLogtoContext, signIn, signOut } from "@logto/next/server-actions";
-import { Button } from "./ui/button";
+import { signIn, signOut } from "@logto/next/server-actions";
 import SignOut from "@/app/auth/SignOut";
 import SignIn from "@/app/auth/SignIn";
 import { auth } from "@/lib/logto/auth";
 import { logtoConfig } from "@/lib/logto/logto";
 
 async function Header() {
-  // const { isAuthenticated } = await getLogtoContext(logtoConfig);
   const { isAuthenticated } = await auth();
 
   return (
