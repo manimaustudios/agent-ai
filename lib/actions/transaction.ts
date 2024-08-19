@@ -10,12 +10,13 @@ import {
   getDocs,
   doc,
   updateDoc,
+  setDoc,
+  getDoc,
+  FirestoreError,
+  DocumentSnapshot,
+  QueryDocumentSnapshot,
+  DocumentData,
 } from "firebase/firestore";
-
-// import { CreateTransactionParams } from "@/types";
-// import { connectToDatabase } from "../database";
-// import Transaction from "../database/models/transaction.model";
-// import { handleError } from "../utils";
 
 const price =
   process.env.ENV_NODE === "development"
@@ -48,20 +49,6 @@ export async function checkoutPayment(userId: string | null) {
 
   redirect(session.url!);
 }
-
-// export async function createTransaction(transaction: CreateTransactionParams) {
-//   try {
-//     await connectToDatabase();
-
-//     const newTransaction = await Transaction.create({
-//       ...transaction,
-//     });
-
-//     return JSON.parse(JSON.stringify(newTransaction));
-//   } catch (error) {
-//     handleError(error);
-//   }
-// }
 
 interface SubscriptionUpdate {
   status?: string;
@@ -98,85 +85,139 @@ export async function updateSubscription(
 export async function handleCheckoutSessionCompleted(
   session: Stripe.Checkout.Session,
 ) {
-  const userId = session.metadata?.buyerFirestoreId; // userId passed via metadata
+  const userId = session.metadata?.buyerFirestoreId;
   const subscriptionId = session.subscription as string;
 
   if (userId && subscriptionId) {
+    let subscriptionDocSnap: DocumentSnapshot<DocumentData> | null =
+      await getSubscriptionDocument(subscriptionId);
+
+    if (!subscriptionDocSnap) {
+      subscriptionDocSnap = await createSubscriptionDocument(
+        subscriptionId,
+        userId,
+      );
+    }
+
+    // Update user document with subscriptionId
     const userDocRef = doc(db, "users", userId);
     await updateDoc(userDocRef, {
       subscriptionId: subscriptionId,
-      status: "active", // or any other status you want to set
+      status: "active", // Initial status, might be updated later
     });
-    console.log("User document updated with subscriptionId.");
+
+    console.log("User and subscription documents updated.");
   } else {
     console.error("Missing userId or subscriptionId in session metadata.");
   }
 }
 
 export async function handleSubscriptionEvent(event: Stripe.Event) {
-  const subscription = event.data.object as Stripe.Subscription;
-  const subscriptionId = subscription.id;
+  const subscriptionObject = event.data.object as Stripe.Subscription;
+  const subscriptionId = subscriptionObject.id;
 
-  // Query the users collection to find the user with this subscriptionId
-  const usersRef = collection(db, "users");
-  const q = query(usersRef, where("subscriptionId", "==", subscriptionId));
-  const querySnapshot = await getDocs(q);
+  try {
+    let subscriptionDocSnap: DocumentSnapshot<DocumentData> | null =
+      await getSubscriptionDocument(subscriptionId);
 
-  if (querySnapshot.empty) {
-    console.error("No user found with the subscriptionId:", subscriptionId);
-    return;
+    if (!subscriptionDocSnap) {
+      subscriptionDocSnap = await createSubscriptionDocument(subscriptionId);
+    }
+
+    const updates: Partial<{
+      status: string;
+      nextBillingDate: string;
+      lastPaymentDate: string;
+      amountPaid: number;
+      currency: string;
+      endDate: string;
+    }> = {};
+
+    switch (event.type) {
+      case "invoice.payment_succeeded":
+        const invoice = event.data.object as Stripe.Invoice;
+        updates.status = "active";
+        updates.lastPaymentDate = new Date(
+          invoice.created * 1000,
+        ).toISOString();
+        updates.amountPaid = invoice.amount_paid / 100;
+        updates.currency = invoice.currency;
+        break;
+
+      case "invoice.payment_failed":
+        updates.status = "failed";
+        break;
+
+      case "customer.subscription.created":
+      case "customer.subscription.updated":
+        const subscription = event.data.object as Stripe.Subscription;
+        updates.status = subscription.status;
+        updates.nextBillingDate = new Date(
+          subscription.current_period_end * 1000,
+        ).toISOString();
+        break;
+
+      case "customer.subscription.deleted":
+        const deletedSubscription = event.data.object as Stripe.Subscription;
+        updates.status = "canceled";
+        updates.endDate = new Date(
+          deletedSubscription.current_period_end * 1000,
+        ).toISOString();
+        break;
+
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    if (subscriptionDocSnap && Object.keys(updates).length > 0) {
+      const subscriptionDocRef = subscriptionDocSnap.ref;
+      await updateDoc(subscriptionDocRef, updates);
+
+      console.log("Subscription document updated for event:", event.type);
+    }
+  } catch (error) {
+    console.error("Error handling subscription event:", error);
   }
+}
 
-  // Assuming one user per subscriptionId
-  const userDoc = querySnapshot.docs[0];
-  const userId = userDoc.id;
+async function getSubscriptionDocument(subscriptionId: string) {
+  const subscriptionDocRef = doc(db, "subscriptions", subscriptionId);
 
-  // Update the user's document based on event type
-  const updates: Partial<{
-    status: string;
-    nextBillingDate: string;
-    lastPaymentDate: string;
-    amountPaid: number;
-    currency: string;
-    endDate: string;
-    plan?: string | null; // Add the 'plan' property
-  }> = {};
-
-  switch (event.type) {
-    case "invoice.payment_succeeded":
-      const invoice = event.data.object as Stripe.Invoice;
-      updates.status = "active";
-      updates.lastPaymentDate = new Date(invoice.created * 1000).toISOString();
-      updates.amountPaid = invoice.amount_paid / 100; // Convert cents to dollars
-      updates.currency = invoice.currency;
-      break;
-
-    case "invoice.payment_failed":
-      updates.status = "failed";
-      break;
-
-    case "customer.subscription.created":
-    case "customer.subscription.updated":
-      updates.status = subscription.status;
-      updates.nextBillingDate = new Date(
-        subscription.current_period_end * 1000,
-      ).toISOString();
-      updates.plan = subscription.items.data[0].plan.nickname;
-      break;
-
-    case "customer.subscription.deleted":
-      updates.status = "canceled";
-      updates.endDate = new Date(
-        subscription.current_period_end * 1000,
-      ).toISOString();
-      break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+  try {
+    const subscriptionDocSnap = await getDoc(subscriptionDocRef);
+    if (subscriptionDocSnap.exists()) {
+      return subscriptionDocSnap;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    if ((error as FirestoreError).code === "permission-denied") {
+      // Permission denied, possibly because the document does not exist
+      return null;
+    } else {
+      throw error;
+    }
   }
+}
 
-  if (Object.keys(updates).length > 0) {
-    await updateDoc(userDoc.ref, updates);
-    console.log("User document updated for event:", event.type);
+async function createSubscriptionDocument(
+  subscriptionId: string,
+  userId?: string,
+) {
+  const subscriptionDocRef = doc(db, "subscriptions", subscriptionId);
+
+  try {
+    await setDoc(subscriptionDocRef, {
+      userId: userId ?? "",
+      subscriptionId: subscriptionId,
+      status: "active",
+      createdAt: new Date().toISOString(),
+    });
+
+    const subscriptionDocSnap = await getDoc(subscriptionDocRef);
+    return subscriptionDocSnap;
+  } catch (error) {
+    console.error("Error creating subscription document:", error);
+    throw error;
   }
 }
