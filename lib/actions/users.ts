@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 interface User {
   email: string;
   createdAt: string;
+  status?: string;
 }
 
 export async function getUserDocument(userId: string): Promise<User | null> {
