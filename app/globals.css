@@ -77,6 +77,16 @@
   width: 0;
   height: 0;
 }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #1e293b;
+  border-radius: 40px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
 
 html {
   scroll-behavior: smooth;

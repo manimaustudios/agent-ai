@@ -18,15 +18,15 @@ import { Textarea } from "@/components/ui/textarea";
 import LoadingSpinner from "./LoadingSpinner";
 import { getAiResponse } from "@/lib/actions/openai";
 import { FaChevronRight } from "react-icons/fa";
-// import { createActivity } from "@/lib/actions/activities.actions";
-// import LoadingSpinner from "./ui/LoadingSpinner";
-// import { showToastError, showToastSuccess } from "@/lib/utils";
+import SignInDialog from "./SignInDialog";
+import AccesButton from "./AccesButton";
 
 type ChatTextareaProps = {
   setChatHistory: any;
   chatType: string;
   sessionId: string;
   chatHistory: any;
+  isAuthenticated: boolean;
 };
 
 const ChatTextareaLimits = z.object({
@@ -41,6 +41,7 @@ export function ChatTextarea({
   chatType,
   sessionId,
   chatHistory,
+  isAuthenticated,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -57,41 +58,18 @@ export function ChatTextarea({
 
   const onSubmit = async (data: z.infer<typeof ChatTextareaLimits>) => {
     setIsLoading(true);
-    // setChatHistory((prev: any) => [
-    //   ...prev,
-    //   { type: "question", text: data.content },
-    // ]);
-
-    // Get the current chat history and append the new question
     const newQuestion = { type: "question", text: data.content };
     const updatedHistoryWithQuestion = [...chatHistory, newQuestion];
-
-    // Update the context and local storage with the new question
     setChatHistory(updatedHistoryWithQuestion, chatType, sessionId);
 
     const response = await getAiResponse(data.content);
-    // setChatHistory((prev: any) => [
-    //   ...prev,
-    //   { type: "answer", text: response },
-    // ]);
 
-    // Append the AI's answer to the chat history
     const newAnswer = { type: "answer", text: response };
     const updatedHistoryWithAnswer = [...updatedHistoryWithQuestion, newAnswer];
-
-    // Update the context and local storage with the new answer
     setChatHistory(updatedHistoryWithAnswer, chatType, sessionId);
 
-    // OLD CODE
-    // const analysis = await getAiResponse(data);
-    // if (analysis?.error) {
-    //   showToastError(analysis.error);
-    //   setIsLoading(false);
-    //   return;
-    // }
-    // await createActivity("analysis", "added");
     await resetFormValues();
-    // showToastSuccess("Analysis created successfully");
+
     setIsLoading(false);
   };
 
@@ -99,7 +77,7 @@ export function ChatTextarea({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="relative my-6 w-full space-y-6"
+        className="relative w-full space-y-6 py-6"
       >
         <FormField
           control={form.control}
@@ -120,14 +98,18 @@ export function ChatTextarea({
             </FormItem>
           )}
         />
-        <div className="absolute bottom-7 right-2 flex items-center gap-3">
-          <Button type="submit" size="icon" disabled={isLoading}>
-            {isLoading ? (
-              <LoadingSpinner className="text-white" />
-            ) : (
-              <FaChevronRight className="h-4 w-4" />
-            )}
-          </Button>
+        <div className="absolute right-2 top-[44%] flex -translate-y-1/2 transform items-center gap-3">
+          {isAuthenticated ? (
+            <Button type="submit" size="icon" disabled={isLoading}>
+              {isLoading ? (
+                <LoadingSpinner className="text-white" />
+              ) : (
+                <FaChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+          ) : (
+            <SignInDialog />
+          )}
         </div>
       </form>
     </Form>

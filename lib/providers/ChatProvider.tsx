@@ -30,8 +30,10 @@ interface ChatContextProps {
   loadChatHistory: (chatType: string, sessionId: string) => void;
   deleteChatHistory: (chatType: string, sessionId: string) => void;
   startNewSession: (chatType: string, chatName: string) => string;
-  sessions: ChatSession[]; // New: List of active chat sessions
-  deleteSession: (chatType: string, sessionId: string) => void; // New: Function to delete a session
+  sessions: ChatSession[];
+  deleteSession: (chatType: string, sessionId: string) => void;
+  currentSessionId: string;
+  currentChatType: string;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -92,14 +94,28 @@ export function ChatProvider({ children }: ChatProviderProps) {
     }
   };
 
+  // const loadChatHistory = (chatType: string, sessionId: string) => {
+  //   const savedHistory = localStorage.getItem(`${chatType}-${sessionId}`);
+  //   if (savedHistory) {
+  //     setChatHistoryState(JSON.parse(savedHistory));
+  //     setCurrentChatType(chatType);
+  //     setCurrentSessionId(sessionId);
+  //   } else {
+  //     setChatHistoryState([]);
+  //   }
+  // };
+
   const loadChatHistory = (chatType: string, sessionId: string) => {
     const savedHistory = localStorage.getItem(`${chatType}-${sessionId}`);
     if (savedHistory) {
       setChatHistoryState(JSON.parse(savedHistory));
+      // Now that we have successfully loaded the history, update current session details
       setCurrentChatType(chatType);
       setCurrentSessionId(sessionId);
     } else {
       setChatHistoryState([]);
+      setCurrentChatType(chatType); // Still set current chat if no history exists
+      setCurrentSessionId(sessionId);
     }
   };
 
@@ -112,16 +128,31 @@ export function ChatProvider({ children }: ChatProviderProps) {
     deleteSession(chatType, sessionId);
   };
 
+  // const startNewSession = (chatType: string, chatName: string) => {
+  //   const newSessionId = Date.now().toString(); // Generate a unique session ID using timestamp
+  //   setCurrentChatType(chatType);
+  //   setCurrentSessionId(newSessionId);
+  //   setChatHistoryState([]); // Clear chat history for the new session
+  //   // Add the new session to the sessions list
+  //   setSessions((prevSessions) => [
+  //     ...prevSessions,
+  //     { chatType, sessionId: newSessionId, chatName },
+  //   ]);
+  //   return newSessionId;
+  // };
+
   const startNewSession = (chatType: string, chatName: string) => {
     const newSessionId = Date.now().toString(); // Generate a unique session ID using timestamp
+    setChatHistoryState([]); // Clear chat history for the new session BEFORE setting session IDs
     setCurrentChatType(chatType);
     setCurrentSessionId(newSessionId);
-    setChatHistoryState([]); // Clear chat history for the new session
+
     // Add the new session to the sessions list
     setSessions((prevSessions) => [
       ...prevSessions,
       { chatType, sessionId: newSessionId, chatName },
     ]);
+
     return newSessionId;
   };
 
@@ -142,8 +173,10 @@ export function ChatProvider({ children }: ChatProviderProps) {
         loadChatHistory,
         deleteChatHistory,
         startNewSession,
-        sessions, // Expose sessions
-        deleteSession, // Expose function to delete a session
+        sessions,
+        deleteSession,
+        currentSessionId,
+        currentChatType,
       }}
     >
       {children}

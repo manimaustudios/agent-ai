@@ -150,6 +150,7 @@ export async function handleSubscriptionEvent(event: Stripe.Event) {
       status: string;
       nextBillingDate: string;
       lastPaymentDate: string;
+      currentPeriodEnd: string;
       amountPaid: number;
       currency: string;
       endDate: string;
@@ -167,11 +168,17 @@ export async function handleSubscriptionEvent(event: Stripe.Event) {
         updates.nextBillingDate = new Date(
           (event.data.object as Stripe.Subscription).current_period_end * 1000,
         ).toISOString();
+        updates.currentPeriodEnd = new Date(
+          (event.data.object as Stripe.Subscription).current_period_end * 1000,
+        ).toISOString();
         break;
 
       case "customer.subscription.deleted":
         updates.status = "canceled";
         updates.endDate = new Date(
+          (event.data.object as Stripe.Subscription).current_period_end * 1000,
+        ).toISOString();
+        updates.currentPeriodEnd = new Date(
           (event.data.object as Stripe.Subscription).current_period_end * 1000,
         ).toISOString();
         break;
