@@ -1,9 +1,8 @@
 import Sidebar from "@/components/Sidebar";
 import Chat from "@/components/Chat";
-import { doc, getDoc, setDoc } from "@firebase/firestore";
 import { auth } from "@/lib/logto/auth";
-import { db } from "@/lib/firebase";
 import { ensureUserDocumentExists } from "@/lib/actions/users";
+import DisclaimerDialog from "@/components/DisclaimerDialog";
 
 async function Page() {
   const { userId, userEmail, isAuthenticated } = await auth();
@@ -13,7 +12,7 @@ async function Page() {
   }
 
   let userData = null;
-  let welcomeMessage = "Hi, how are you today?";
+  let welcomeMessage = "Hi, how can I help you today?";
 
   try {
     if (isAuthenticated && userId && userEmail) {
@@ -29,7 +28,11 @@ async function Page() {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <Chat welcomeMessage={welcomeMessage} />
+      <Chat
+        welcomeMessage={welcomeMessage}
+        isAuthenticated={isAuthenticated ?? false}
+      />
+      {!isAuthenticated && <DisclaimerDialog />}
     </div>
   );
 }
