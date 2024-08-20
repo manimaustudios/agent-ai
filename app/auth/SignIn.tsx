@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 
 type Props = {
   onSignIn: () => Promise<void>;
+  variant?: "secondary" | "default";
 };
 
-const SignIn = ({ onSignIn }: Props) => {
+const SignIn = ({ onSignIn, variant }: Props) => {
   return (
     <Button
-      variant="secondary"
+      variant={variant ? variant : "secondary"}
       onClick={() => {
         onSignIn();
       }}
