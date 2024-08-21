@@ -1,5 +1,7 @@
 import { getUserDocument } from "@/lib/actions/users";
 import PaymentButton from "./PaymentButton";
+import ProgressBar from "./ProgressBar";
+import { getSettings } from "@/lib/actions/settings";
 
 type Props = {
   userId: string | null;
@@ -7,14 +9,22 @@ type Props = {
 
 async function SubscriptionStatus({ userId }: Props) {
   let data = null;
+  let settings = null;
 
   if (userId) {
     data = await getUserDocument(userId);
+    settings = await getSettings();
   }
 
   return (
     <div>
-      <div className="mb-3 ml-1 text-sm text-slate-200">
+      {data?.status !== "active" && (
+        <ProgressBar
+          amount={data?.msgAmount ?? 0}
+          limit={settings?.msgAmountLimit ?? 0}
+        />
+      )}
+      <div className="my-3 ml-1 pt-2 text-sm text-slate-200">
         Plan:{" "}
         <span className="ml-1 rounded-md bg-slate-300 px-1 font-semibold text-primary">
           {data?.status === "active" ? "Premium" : "Free"}

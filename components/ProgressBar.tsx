@@ -1,17 +1,32 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Progress } from "./ui/progress";
 
-type Props = {};
+type ProgressBarProps = {
+  amount: number;
+  limit: number;
+};
 
-function ProgressBar({}: Props) {
-  const [progress, setProgress] = useState(13);
+function ProgressBar({ amount, limit }: ProgressBarProps) {
+  const [progress, setProgress] = useState(limit);
 
   useEffect(() => {
-    const timer = setTimeout(() => setProgress(66), 500);
+    const timer = setTimeout(() => setProgress((amount / limit) * 100), 500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [amount, limit]);
 
-  return <Progress value={progress} className="w-[60%]" />;
+  return (
+    <div>
+      <Progress value={progress} className="h-2 w-[80%]" />
+      <div className="mt-1 text-xs text-slate-400">
+        <p>
+          Used: {amount}/{limit}
+        </p>
+        {/* <p>Reset at: 12:04PM</p> */}
+      </div>
+    </div>
+  );
 }
 
 export default ProgressBar;
