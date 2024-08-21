@@ -16,7 +16,7 @@ function PaymentButton({ userId }: PaymentButtonProps) {
     await checkoutPayment(userId);
     setIsLoading(false);
   };
-  return <Button onClick={() => handlePayment()}>Pay Now</Button>;
+  return <Button onClick={() => handlePayment()}>Get Premium</Button>;
 }
 
 export default PaymentButton;
