@@ -1,7 +1,11 @@
 import Sidebar from "@/components/Sidebar";
 import Chat from "@/components/Chat";
 import { auth } from "@/lib/logto/auth";
-import { ensureUserDocumentExists } from "@/lib/actions/users";
+import {
+  ensureUserDocumentExists,
+  hasLimitLeft,
+  hasPremiumPlan,
+} from "@/lib/actions/users";
 import DisclaimerDialog from "@/components/DisclaimerDialog";
 
 async function Page() {
@@ -20,17 +24,22 @@ async function Page() {
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
-    // Handle the error, but still return the default structure
   }
 
-  console.log("User data:", userData);
+  const hasLimit = await hasLimitLeft(userId);
+  const hasPremium = await hasPremiumPlan(userId);
+
+  const canSendMessage = hasLimit || hasPremium;
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId} />
       <Chat
         welcomeMessage={welcomeMessage}
         isAuthenticated={isAuthenticated ?? false}
+        hasLimit={hasLimit ?? false}
+        hasPremium={hasPremium}
+        userId={userId}
       />
       {!isAuthenticated && <DisclaimerDialog />}
     </div>

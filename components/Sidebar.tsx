@@ -1,15 +1,16 @@
-import { FaChevronLeft, FaTimes } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
+
 import AccesButton from "./AccesButton";
-import { auth } from "@/lib/logto/auth";
 import ChatHistory from "./ChatHistory";
-import PaymentButton from "./PaymentButton";
 import NewChatButton from "./NewChatButton";
-import CreateUserButton from "./CreateUserButton";
 import SubscriptionStatus from "./SubscriptionStatus";
 
-async function Sidebar() {
-  const { isAuthenticated, userId } = await auth();
+type SidebarProps = {
+  isAuthenticated: boolean;
+  userId: string | null;
+};
 
+async function Sidebar({ isAuthenticated, userId }: SidebarProps) {
   return (
     <div className="flex h-screen w-56 flex-col bg-slate-900 p-2">
       <div className="space-y-4">
@@ -22,8 +23,8 @@ async function Sidebar() {
         {isAuthenticated && <ChatHistory />}
       </div>
       <div className="mt-auto space-y-2">
+        {/* For testing */}
         {/* <CreateUserButton userId={userId} /> */}
-        {/* {isAuthenticated && <PaymentButton userId={userId} />} */}
         {isAuthenticated && <SubscriptionStatus userId={userId} />}
         <AccesButton isAuth={isAuthenticated} />
       </div>
