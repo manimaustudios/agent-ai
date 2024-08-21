@@ -28,9 +28,18 @@ const chatList = [
 type ChatProps = {
   welcomeMessage: string;
   isAuthenticated: boolean;
+  hasLimit: boolean;
+  hasPremium: boolean;
+  userId: string | null;
 };
 
-function Chat({ welcomeMessage, isAuthenticated }: ChatProps) {
+function Chat({
+  welcomeMessage,
+  isAuthenticated,
+  hasLimit,
+  hasPremium,
+  userId,
+}: ChatProps) {
   const {
     chatHistory,
     setChatHistory,
@@ -51,7 +60,7 @@ function Chat({ welcomeMessage, isAuthenticated }: ChatProps) {
         <div className="py-6 text-center">AI Chat Agent</div>
 
         {chatHistory?.length > 0 ? (
-          // Chat interface
+          // Chat history interface
           <ScrollArea className="flex-1 overflow-auto md:px-6">
             <div className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line">
               {chatHistory.map((item, i) => (
@@ -84,7 +93,7 @@ function Chat({ welcomeMessage, isAuthenticated }: ChatProps) {
                   onClick={() => handleStartNewChat(chat.type, chat.name)}
                 >
                   <Image
-                    alt=""
+                    alt="person face"
                     priority
                     src={imgSrc}
                     fill
@@ -104,6 +113,9 @@ function Chat({ welcomeMessage, isAuthenticated }: ChatProps) {
             sessionId={currentSessionId}
             chatHistory={chatHistory}
             isAuthenticated={isAuthenticated}
+            hasLimit={hasLimit}
+            hasPremium={hasPremium}
+            userId={userId}
           />
         )}
       </div>

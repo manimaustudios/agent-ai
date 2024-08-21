@@ -14,12 +14,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import LoadingSpinner from "./LoadingSpinner";
 import { getAiResponse } from "@/lib/actions/openai";
 import { FaChevronRight } from "react-icons/fa";
 import SignInDialog from "./SignInDialog";
-import AccesButton from "./AccesButton";
+import { updateMsgAmount } from "@/lib/actions/users";
 
 type ChatTextareaProps = {
   setChatHistory: any;
@@ -27,6 +35,9 @@ type ChatTextareaProps = {
   sessionId: string;
   chatHistory: any;
   isAuthenticated: boolean;
+  hasLimit: boolean;
+  hasPremium: boolean;
+  userId: string | null;
 };
 
 const ChatTextareaLimits = z.object({
@@ -42,8 +53,12 @@ export function ChatTextarea({
   sessionId,
   chatHistory,
   isAuthenticated,
+  hasLimit,
+  hasPremium,
+  userId,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const canSendMessage = hasLimit || hasPremium;
 
   const form = useForm<z.infer<typeof ChatTextareaLimits>>({
     resolver: zodResolver(ChatTextareaLimits),
@@ -57,6 +72,8 @@ export function ChatTextarea({
   };
 
   const onSubmit = async (data: z.infer<typeof ChatTextareaLimits>) => {
+    if (!canSendMessage) return;
+
     setIsLoading(true);
     const newQuestion = { type: "question", text: data.content };
     const updatedHistoryWithQuestion = [...chatHistory, newQuestion];
@@ -67,6 +84,10 @@ export function ChatTextarea({
     const newAnswer = { type: "answer", text: response };
     const updatedHistoryWithAnswer = [...updatedHistoryWithQuestion, newAnswer];
     setChatHistory(updatedHistoryWithAnswer, chatType, sessionId);
+
+    if (!hasPremium) {
+      await updateMsgAmount(userId);
+    }
 
     await resetFormValues();
 
@@ -90,7 +111,7 @@ export function ChatTextarea({
               <FormControl>
                 <Textarea
                   className="h-24 resize-none pr-16"
-                  placeholder="What is the capital of France?"
+                  placeholder="Write your question here..."
                   {...field}
                 />
               </FormControl>
@@ -100,18 +121,66 @@ export function ChatTextarea({
         />
         <div className="absolute right-2 top-[44%] flex -translate-y-1/2 transform items-center gap-3">
           {isAuthenticated ? (
-            <Button type="submit" size="icon" disabled={isLoading}>
-              {isLoading ? (
-                <LoadingSpinner className="text-white" />
-              ) : (
-                <FaChevronRight className="h-4 w-4" />
-              )}
-            </Button>
+            // <Button type="submit" size="icon" disabled={isLoading}>
+            //   {isLoading ? (
+            //     <LoadingSpinner className="text-white" />
+            //   ) : (
+            //     <FaChevronRight className="h-4 w-4" />
+            //   )}
+            // </Button>
+            <SubmitFormButton
+              isLoading={isLoading}
+              canSendMessage={canSendMessage}
+            />
           ) : (
             <SignInDialog />
           )}
         </div>
       </form>
     </Form>
+  );
+}
+
+type SubmitFormButtonProps = {
+  isLoading: boolean;
+  canSendMessage: boolean;
+};
+
+function SubmitFormButton({
+  isLoading,
+  canSendMessage,
+}: SubmitFormButtonProps) {
+  return (
+    <>
+      {canSendMessage ? (
+        <Button type="submit" size="icon" disabled={isLoading}>
+          {isLoading ? (
+            <LoadingSpinner className="text-white" />
+          ) : (
+            <FaChevronRight className="h-4 w-4" />
+          )}
+        </Button>
+      ) : (
+        // Show dialog if user has free account and reached the limit
+        <Dialog>
+          <DialogTrigger>
+            <Button size="icon" asChild>
+              <div className="h-10 w-10">
+                <FaChevronRight className="h-4 w-4" />
+              </div>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader className="space-y-6">
+              <DialogTitle>You Reached the limit.</DialogTitle>
+              <DialogDescription>
+                You need to upgrade to premium to send unlimited messages or
+                wait till your limit will be restored.
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }
