@@ -24,6 +24,12 @@ async function Page() {
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
+    return (
+      <div>
+        Something went wrong
+        <p>{(error as Error).toString()}</p>
+      </div>
+    );
   }
 
   const hasLimit = await hasLimitLeft(userId);
