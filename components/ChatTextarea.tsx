@@ -16,8 +16,10 @@ import {
 } from "@/components/ui/form";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -28,6 +30,7 @@ import { getAiResponse } from "@/lib/actions/openai";
 import { FaChevronRight } from "react-icons/fa";
 import SignInDialog from "./SignInDialog";
 import { updateMsgAmount } from "@/lib/actions/users";
+import PaymentButton from "./PaymentButton";
 
 type ChatTextareaProps = {
   setChatHistory: any;
@@ -38,6 +41,10 @@ type ChatTextareaProps = {
   hasLimit: boolean;
   hasPremium: boolean;
   userId: string | null;
+  messageLimit: number;
+  hoursToWait: number;
+  isMonthlyLimitReached: boolean;
+  monthlyLimit: number;
 };
 
 const ChatTextareaLimits = z.object({
@@ -56,9 +63,13 @@ export function ChatTextarea({
   hasLimit,
   hasPremium,
   userId,
+  messageLimit,
+  hoursToWait,
+  isMonthlyLimitReached,
+  monthlyLimit,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const canSendMessage = hasLimit || hasPremium;
+  const canSendMessage = hasLimit;
 
   const form = useForm<z.infer<typeof ChatTextareaLimits>>({
     resolver: zodResolver(ChatTextareaLimits),
@@ -85,11 +96,9 @@ export function ChatTextarea({
     const updatedHistoryWithAnswer = [...updatedHistoryWithQuestion, newAnswer];
     setChatHistory(updatedHistoryWithAnswer, chatType, sessionId);
 
-    if (!hasPremium) {
-      await updateMsgAmount(userId);
-    }
-
     await resetFormValues();
+
+    await updateMsgAmount(userId, hasPremium);
 
     setIsLoading(false);
   };
@@ -121,16 +130,14 @@ export function ChatTextarea({
         />
         <div className="absolute right-2 top-[44%] flex -translate-y-1/2 transform items-center gap-3">
           {isAuthenticated ? (
-            // <Button type="submit" size="icon" disabled={isLoading}>
-            //   {isLoading ? (
-            //     <LoadingSpinner className="text-white" />
-            //   ) : (
-            //     <FaChevronRight className="h-4 w-4" />
-            //   )}
-            // </Button>
             <SubmitFormButton
               isLoading={isLoading}
               canSendMessage={canSendMessage}
+              userId={userId}
+              messageLimit={messageLimit}
+              hoursToWait={hoursToWait}
+              isMonthlyLimitReached={isMonthlyLimitReached}
+              monthlyLimit={monthlyLimit}
             />
           ) : (
             <SignInDialog />
@@ -144,11 +151,21 @@ export function ChatTextarea({
 type SubmitFormButtonProps = {
   isLoading: boolean;
   canSendMessage: boolean;
+  userId: string | null;
+  messageLimit: number;
+  hoursToWait: number;
+  isMonthlyLimitReached: boolean;
+  monthlyLimit: number;
 };
 
 function SubmitFormButton({
   isLoading,
   canSendMessage,
+  userId,
+  messageLimit,
+  hoursToWait,
+  isMonthlyLimitReached,
+  monthlyLimit,
 }: SubmitFormButtonProps) {
   return (
     <>
@@ -170,14 +187,48 @@ function SubmitFormButton({
               </div>
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-sm">
             <DialogHeader className="space-y-6">
-              <DialogTitle>You Reached the limit.</DialogTitle>
-              <DialogDescription>
-                You need to upgrade to premium to send unlimited messages or
-                wait till your limit will be restored.
+              <DialogTitle className="text-center">
+                You&#39;ve been chatting a lot.
+              </DialogTitle>
+              <DialogDescription className="space-y-3 text-center">
+                {isMonthlyLimitReached ? (
+                  <>
+                    <p>
+                      You&#39;ve sent more than {monthlyLimit} messages in the
+                      last 30 days.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      You&#39;ve sent more than {messageLimit} messages in the
+                      last {hoursToWait} hours. To keep this service free, we
+                      have to limit free usage.
+                    </p>
+                    <p>
+                      Subscribe to the unlimited plan for just $9/month to
+                      continue chatting. Cancel anytime and save 90-95% compared
+                      to a single human therapist session!
+                    </p>
+                    <p>
+                      You can also come back in a few hours and chat for free.
+                    </p>
+                  </>
+                )}
               </DialogDescription>
             </DialogHeader>
+            <DialogFooter className="mx-auto pt-3">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Cancel
+                </Button>
+              </DialogClose>
+              {!isMonthlyLimitReached && (
+                <PaymentButton userId={userId} cta="Subscribe" />
+              )}
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       )}

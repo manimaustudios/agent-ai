@@ -6,9 +6,10 @@ import { useState } from "react";
 
 type PaymentButtonProps = {
   userId: string | null;
+  cta?: string;
 };
 
-function PaymentButton({ userId }: PaymentButtonProps) {
+function PaymentButton({ userId, cta }: PaymentButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePayment = async () => {
@@ -16,7 +17,9 @@ function PaymentButton({ userId }: PaymentButtonProps) {
     await checkoutPayment(userId);
     setIsLoading(false);
   };
-  return <Button onClick={() => handlePayment()}>Get Premium</Button>;
+  return (
+    <Button onClick={() => handlePayment()}>{cta ? cta : "Get Premium"}</Button>
+  );
 }
 
 export default PaymentButton;

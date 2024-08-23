@@ -31,6 +31,10 @@ type ChatProps = {
   hasLimit: boolean;
   hasPremium: boolean;
   userId: string | null;
+  messageLimit: number;
+  hoursToWait: number;
+  isMonthlyLimitReached: boolean;
+  monthlyLimit: number;
 };
 
 function Chat({
@@ -39,6 +43,10 @@ function Chat({
   hasLimit,
   hasPremium,
   userId,
+  messageLimit,
+  hoursToWait,
+  isMonthlyLimitReached,
+  monthlyLimit,
 }: ChatProps) {
   const {
     chatHistory,
@@ -116,6 +124,10 @@ function Chat({
             hasLimit={hasLimit}
             hasPremium={hasPremium}
             userId={userId}
+            messageLimit={messageLimit}
+            hoursToWait={hoursToWait}
+            isMonthlyLimitReached={isMonthlyLimitReached}
+            monthlyLimit={monthlyLimit}
           />
         )}
       </div>

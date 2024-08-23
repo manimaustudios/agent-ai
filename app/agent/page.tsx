@@ -7,6 +7,9 @@ import {
   hasPremiumPlan,
 } from "@/lib/actions/users";
 import DisclaimerDialog from "@/components/DisclaimerDialog";
+import AccesButton from "@/components/AccesButton";
+import SubscriptionStatus from "@/components/SubscriptionStatus";
+import { getSettings } from "@/lib/actions/settings";
 
 async function Page() {
   const { userId, userEmail, isAuthenticated } = await auth();
@@ -24,28 +27,38 @@ async function Page() {
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
-    return (
-      <div>
-        Something went wrong
-        <p>{(error as Error).toString()}</p>
-      </div>
-    );
   }
 
-  const hasLimit = await hasLimitLeft(userId);
-  const hasPremium = await hasPremiumPlan(userId);
+  const { msgAmountLimit, hoursToWait, msgAmountLimitMonthly } =
+    await getSettings();
+  const hasLimit = await hasLimitLeft(
+    userId,
+    userData,
+    msgAmountLimit,
+    hoursToWait,
+    msgAmountLimitMonthly,
+  );
+  const hasPremium = await hasPremiumPlan(userId, userData);
 
-  const canSendMessage = hasLimit || hasPremium;
+  const isMonthlyLimitReached =
+    (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
 
   return (
     <div className="flex h-screen">
-      <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId} />
+      <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
+        {isAuthenticated && <SubscriptionStatus userId={userId} />}
+        <AccesButton isAuth={isAuthenticated} />
+      </Sidebar>
       <Chat
         welcomeMessage={welcomeMessage}
         isAuthenticated={isAuthenticated ?? false}
         hasLimit={hasLimit ?? false}
         hasPremium={hasPremium}
         userId={userId}
+        messageLimit={msgAmountLimit ?? 0}
+        hoursToWait={hoursToWait ?? 0}
+        isMonthlyLimitReached={isMonthlyLimitReached}
+        monthlyLimit={msgAmountLimitMonthly ?? 0}
       />
       {!isAuthenticated && <DisclaimerDialog />}
     </div>
