@@ -190,22 +190,22 @@ function SubmitFormButton({
           <DialogContent className="max-w-sm">
             <DialogHeader className="space-y-6">
               <DialogTitle className="text-center">
-                You've been chatting a lot.
+                You&#39;ve been chatting a lot.
               </DialogTitle>
               <DialogDescription className="space-y-3 text-center">
                 {isMonthlyLimitReached ? (
                   <>
                     <p>
-                      You've sent more than {monthlyLimit} messages in the last
-                      30 days.
+                      You&#39;ve sent more than {monthlyLimit} messages in the
+                      last 30 days.
                     </p>
                   </>
                 ) : (
                   <>
                     <p>
-                      You've sent more than {messageLimit} messages in the last{" "}
-                      {hoursToWait} hours. To keep this service free, we have to
-                      limit free usage.
+                      You&#39;ve sent more than {messageLimit} messages in the
+                      last {hoursToWait} hours. To keep this service free, we
+                      have to limit free usage.
                     </p>
                     <p>
                       Subscribe to the unlimited plan for just $9/month to
