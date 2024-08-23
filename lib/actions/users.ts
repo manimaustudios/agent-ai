@@ -19,6 +19,8 @@ interface User {
   msgAmount: number;
   firstMsgTime?: Timestamp;
   subscriptionId?: string;
+  firstMsgTimeMonthly?: Timestamp;
+  msgAmountMonthly: number;
 }
 
 export async function getUserDocument(userId: string): Promise<User | null> {
@@ -47,6 +49,7 @@ async function createUserDocument(
     email: userEmail,
     createdAt: new Date().toISOString(),
     msgAmount: 0,
+    msgAmountMonthly: 0,
   };
 
   await setDoc(doc(db, "users", userId), {
@@ -54,6 +57,7 @@ async function createUserDocument(
     email: userEmail,
     createdAt: userData.createdAt,
     msgAmount: 0,
+    msgAmountMonthly: 0,
     firstMsgTime: null,
   });
   console.log("User document created successfully.");
@@ -77,26 +81,25 @@ export async function ensureUserDocumentExists(
   return userData;
 }
 
-type UserData = {
-  userId: string;
-  msgAmount: number;
-  firstMsgTime: Timestamp;
-};
-
-export async function hasLimitLeft(userId: string | null) {
+export async function hasLimitLeft(
+  userId: string | null,
+  userData: User | null,
+  msgAmountLimit: number,
+  hoursToWait: number,
+  msgAmountLimitMonthly: number,
+) {
   if (!userId) return false;
-
-  const userData = await getUserDocument(userId);
-  const { msgAmountLimit, hoursToWait } = await getSettings();
+  if (!userData) return false;
 
   const now = Timestamp.now();
   const userDocRef = doc(db, "users", userId);
 
+  // Check if user daily message limit can be reset
   if (userData?.firstMsgTime) {
     const timeDiff = now.seconds - userData.firstMsgTime.seconds;
     const hoursPassed = timeDiff / 3600; // convert seconds to hours
 
-    // Reset msgAmount when time limit is reached
+    // Reset msgAmount when daily time limit is reached
     if (hoursPassed >= hoursToWait) {
       await updateDoc(userDocRef, {
         msgAmount: 0,
@@ -107,15 +110,39 @@ export async function hasLimitLeft(userId: string | null) {
     }
   }
 
-  // Check if user has reached the message limit
-  if (userData && userData.msgAmount < msgAmountLimit) {
-    return true;
+  // Check if user montly message limit can be reset
+  if (userData?.firstMsgTimeMonthly) {
+    const timeDiff = now.seconds - userData.firstMsgTimeMonthly.seconds;
+    const hoursPassed = timeDiff / 3600; // convert seconds to hours
+
+    // Reset msgAmountMonthly when monthly time limit is reached
+    if (hoursPassed >= 720) {
+      await updateDoc(userDocRef, {
+        msgAmountMonthly: 0,
+      });
+
+      revalidatePath("/agent");
+      return true;
+    }
   }
 
-  return false;
+  // Check if user has reached the message limit for the day
+  if (userData && userData.msgAmount >= msgAmountLimit) {
+    return false;
+  }
+
+  // Check if user has reached the message limit for the month
+  if (userData && userData.msgAmountMonthly >= msgAmountLimitMonthly) {
+    return false;
+  }
+
+  return true;
 }
 
-export async function updateMsgAmount(userId: string | null) {
+export async function updateMsgAmount(
+  userId: string | null,
+  hasPremium: boolean,
+) {
   if (!userId) return;
 
   const userData = await getUserDocument(userId);
@@ -124,20 +151,26 @@ export async function updateMsgAmount(userId: string | null) {
   const userDocRef = doc(db, "users", userId);
   if (userData && userData.msgAmount < msgAmountLimit) {
     await updateDoc(userDocRef, {
-      msgAmount: userData.msgAmount + 1,
+      msgAmount: hasPremium ? userData.msgAmount : userData.msgAmount + 1,
+      msgAmountMonthly: userData.msgAmountMonthly + 1,
       firstMsgTime:
         userData.msgAmount === 0 ? Timestamp.now() : userData.firstMsgTime,
+      firstMsgTimeMonthly:
+        userData.msgAmountMonthly === 0
+          ? Timestamp.now()
+          : userData.firstMsgTimeMonthly,
     });
   }
   revalidatePath("/agent");
 }
 
-export async function hasPremiumPlan(userId: string | null) {
+export async function hasPremiumPlan(
+  userId: string | null,
+  userData: User | null,
+) {
   if (!userId) return false;
 
   try {
-    const userData = await getUserDocument(userId);
-
     if (userData?.status === "active") return true;
     if (!userData?.subscriptionId) return false;
 

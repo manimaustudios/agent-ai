@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 interface Settings {
   msgAmountLimit: number;
   hoursToWait: number;
+  msgAmountLimitMonthly: number;
 }
 
 export async function getSettings(): Promise<Settings> {
@@ -21,5 +22,6 @@ export async function getSettings(): Promise<Settings> {
   return {
     msgAmountLimit: 0,
     hoursToWait: 0,
+    msgAmountLimitMonthly: 0,
   };
 }
