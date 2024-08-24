@@ -64,8 +64,8 @@ function Chat({
 
   return (
     <>
-      <div className="mx-auto flex h-screen w-full max-w-screen-xl flex-col bg-slate-950 px-2">
-        <div className="py-6 text-center">AI Chat Agent</div>
+      <div className="mx-auto flex h-screen w-full max-w-screen-xl flex-col bg-background px-2">
+        <div className="py-3 text-center">AI Chat Agent</div>
 
         {chatHistory?.length > 0 ? (
           // Chat history interface
@@ -77,8 +77,8 @@ function Chat({
                     <p
                       className={`${
                         item.type === "question"
-                          ? "ml-auto bg-slate-800"
-                          : "mr-auto bg-slate-600"
+                          ? "ml-auto bg-secondary"
+                          : "mr-auto bg-secondary"
                       } inline-block max-w-[80%] rounded-md p-3 md:max-w-[65%]`}
                     >
                       {item.text}
@@ -108,7 +108,7 @@ function Chat({
                     className="absoulute z-0 rounded-full object-cover opacity-80 hover:opacity-100"
                   />
                 </button>
-                <p className="text-slate-300">{chat.name}</p>
+                <p className="">{chat.name}</p>
               </div>
             ))}
           </div>

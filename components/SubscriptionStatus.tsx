@@ -24,9 +24,9 @@ async function SubscriptionStatus({ userId }: Props) {
           limit={settings?.msgAmountLimit ?? 0}
         />
       )}
-      <div className="my-3 ml-1 pt-2 text-sm text-slate-200">
+      <div className="my-3 ml-1 pt-2 text-sm">
         Plan:{" "}
-        <span className="ml-1 rounded-md bg-slate-300 px-1 font-semibold text-primary">
+        <span className="ml-1 rounded-md bg-slate-400 px-1 font-semibold text-primary">
           {data?.status === "active" ? "Premium" : "Free"}
         </span>
       </div>

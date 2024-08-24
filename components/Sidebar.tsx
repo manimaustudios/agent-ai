@@ -17,14 +17,14 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
   return (
     <>
       <div
-        className={`${isOpen ? "flex" : "hidden"} h-screen w-56 flex-col bg-slate-900 p-2`}
+        className={`${isOpen ? "flex" : "hidden"} h-screen w-56 flex-col bg-secondary/50 p-2`}
       >
         <div className="space-y-4">
           <div className="ml-3 flex items-center justify-between">
             Logo
             <button
               onClick={() => setIsOpen(false)}
-              className="-mr-2 flex size-6 items-center justify-center rounded-l-full bg-slate-800"
+              className="-mr-2 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
             >
               <FaChevronLeft className="size-4" />
             </button>
@@ -40,7 +40,7 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
       </div>
       <button
         onClick={() => setIsOpen(true)}
-        className={`${!isOpen ? "flex" : "hidden"} absolute left-0 top-3 size-6 items-center justify-center rounded-r-full bg-slate-800`}
+        className={`${!isOpen ? "flex" : "hidden"} absolute left-0 top-3 size-6 items-center justify-center rounded-r-full border bg-background`}
       >
         <FaChevronRight className="size-4" />
       </button>

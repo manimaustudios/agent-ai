@@ -23,7 +23,6 @@ function ProgressBar({ amount, limit }: ProgressBarProps) {
         <p>
           Used: {amount}/{limit}
         </p>
-        {/* <p>Reset at: 12:04PM</p> */}
       </div>
     </div>
   );

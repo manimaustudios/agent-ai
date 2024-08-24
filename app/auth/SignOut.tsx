@@ -9,6 +9,7 @@ type Props = {
 const SignOut = ({ onSignOut }: Props) => {
   return (
     <Button
+      className="border bg-background"
       variant="secondary"
       onClick={() => {
         onSignOut();

@@ -10,6 +10,7 @@ import DisclaimerDialog from "@/components/DisclaimerDialog";
 import AccesButton from "@/components/AccesButton";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
 import { getSettings } from "@/lib/actions/settings";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 async function Page() {
   const { userId, userEmail, isAuthenticated } = await auth();
@@ -44,10 +45,13 @@ async function Page() {
     (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
 
   return (
-    <div className="flex h-screen">
+    <>
       <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
         {isAuthenticated && <SubscriptionStatus userId={userId} />}
-        <AccesButton isAuth={isAuthenticated} />
+        <div className="flex gap-4">
+          <AccesButton isAuth={isAuthenticated} />
+          <ThemeToggle />
+        </div>
       </Sidebar>
       <Chat
         welcomeMessage={welcomeMessage}
@@ -61,7 +65,7 @@ async function Page() {
         monthlyLimit={msgAmountLimitMonthly ?? 0}
       />
       {!isAuthenticated && <DisclaimerDialog />}
-    </div>
+    </>
   );
 }
 
