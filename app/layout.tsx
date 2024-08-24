@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/lib/providers/ThemeProvider";
+import { PHProvider } from "@/lib/providers/PHProvider";
+import PostHogPageView from "@/components/PostHogPageView";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -18,10 +21,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.className} bg-slate-950 antialiased`}>
-        {children}
-      </body>
+    <html lang="en" suppressHydrationWarning>
+      <PHProvider>
+        <body className={`${poppins.className} antialiased`}>
+          <PostHogPageView />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </PHProvider>
     </html>
   );
 }
