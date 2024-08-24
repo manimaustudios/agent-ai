@@ -14,8 +14,8 @@ function NewChatButton({}: Props) {
   };
   return (
     <Button
-      className="flex items-center justify-center gap-2"
-      variant="ghost"
+      className="flex items-center justify-center gap-2 border bg-background"
+      variant="secondary"
       size="sm"
       onClick={() => handleStartNewChat()}
     >

@@ -5,14 +5,14 @@ import Link from "next/link";
 const NotFound = () => {
   return (
     <>
-      <BackgroundGradient />
-      <section className="flex min-h-screen items-center">
+      {/* <BackgroundGradient /> */}
+      <section className="flex min-h-screen items-center bg-background">
         <div className="mx-auto max-w-screen-xl px-4 py-8 lg:px-6 lg:py-16">
           <div className="mx-auto max-w-screen-sm text-center">
             <h1 className="mb-4 text-7xl font-extrabold tracking-tight text-primary lg:text-9xl">
               404
             </h1>
-            <p className="mb-4 text-3xl font-bold tracking-tight text-slate-100 md:text-4xl">
+            <p className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
               Something&apos;s missing.
             </p>
             <p className="mb-4 text-lg font-light text-slate-400">

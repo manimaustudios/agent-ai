@@ -5,5 +5,9 @@ export default function AgentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ChatProvider>{children}</ChatProvider>;
+  return (
+    <ChatProvider>
+      <div className="flex h-screen bg-background">{children}</div>
+    </ChatProvider>
+  );
 }

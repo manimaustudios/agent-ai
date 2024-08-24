@@ -195,26 +195,26 @@ function SubmitFormButton({
               <DialogDescription className="space-y-3 text-center">
                 {isMonthlyLimitReached ? (
                   <>
-                    <p>
+                    <span>
                       You&#39;ve sent more than {monthlyLimit} messages in the
                       last 30 days.
-                    </p>
+                    </span>
                   </>
                 ) : (
                   <>
-                    <p>
+                    <span>
                       You&#39;ve sent more than {messageLimit} messages in the
                       last {hoursToWait} hours. To keep this service free, we
                       have to limit free usage.
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       Subscribe to the unlimited plan for just $9/month to
                       continue chatting. Cancel anytime and save 90-95% compared
                       to a single human therapist session!
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       You can also come back in a few hours and chat for free.
-                    </p>
+                    </span>
                   </>
                 )}
               </DialogDescription>
