@@ -1,5 +1,4 @@
 import { ChatProvider } from "@/lib/providers/ChatProvider";
-import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 
 export default function AgentLayout({
   children,
@@ -8,9 +7,7 @@ export default function AgentLayout({
 }) {
   return (
     <ChatProvider>
-      <div className="flex h-screen bg-background" suppressHydrationWarning>
-        {children}
-      </div>
+      <div className="flex h-screen bg-background">{children}</div>
     </ChatProvider>
   );
 }

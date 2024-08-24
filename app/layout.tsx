@@ -3,7 +3,6 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { PHProvider } from "@/lib/providers/PHProvider";
-import PostHogPageView from "@/components/PostHogPageView";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,7 +23,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <PHProvider>
         <body className={`${poppins.className} antialiased`}>
-          <PostHogPageView />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
