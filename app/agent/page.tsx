@@ -11,6 +11,7 @@ import AccesButton from "@/components/AccesButton";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
 import { getSettings } from "@/lib/actions/settings";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { getAllChats } from "@/lib/actions/chats";
 
 async function Page() {
   const { userId, userEmail, isAuthenticated } = await auth();
@@ -41,6 +42,10 @@ async function Page() {
   );
   const hasPremium = await hasPremiumPlan(userId, userData);
 
+  const chatList = await getAllChats();
+
+  // console.log("all chats", chatList);
+
   const isMonthlyLimitReached =
     (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
 
@@ -63,6 +68,7 @@ async function Page() {
         hoursToWait={hoursToWait ?? 0}
         isMonthlyLimitReached={isMonthlyLimitReached}
         monthlyLimit={msgAmountLimitMonthly ?? 0}
+        chatList={chatList}
       />
       {!isAuthenticated && <DisclaimerDialog />}
     </>

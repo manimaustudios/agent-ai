@@ -5,7 +5,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FaTimes } from "react-icons/fa";
 
 function ChatHistory() {
-  const { sessions, loadChatHistory, deleteChatHistory, setChatHistory } =
+  const { sessions, loadChatHistory, deleteChatHistory, currentSessionId } =
     useChat();
 
   const handleShowChatHistory = (chatType: string, sessionId: string) => {

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +31,7 @@ import { FaChevronRight } from "react-icons/fa";
 import SignInDialog from "./SignInDialog";
 import { updateMsgAmount } from "@/lib/actions/users";
 import PaymentButton from "./PaymentButton";
+import { getFormattedChatHistory } from "@/lib/utils";
 
 type ChatTextareaProps = {
   setChatHistory: any;
@@ -45,6 +46,7 @@ type ChatTextareaProps = {
   hoursToWait: number;
   isMonthlyLimitReached: boolean;
   monthlyLimit: number;
+  currentPrompt: string;
 };
 
 const ChatTextareaLimits = z.object({
@@ -67,6 +69,7 @@ export function ChatTextarea({
   hoursToWait,
   isMonthlyLimitReached,
   monthlyLimit,
+  currentPrompt,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
   const canSendMessage = hasLimit;
@@ -90,7 +93,13 @@ export function ChatTextarea({
     const updatedHistoryWithQuestion = [...chatHistory, newQuestion];
     setChatHistory(updatedHistoryWithQuestion, chatType, sessionId);
 
-    const response = await getAiResponse(data.content);
+    const formattedChatHistory = getFormattedChatHistory(
+      chatHistory,
+      newQuestion,
+      currentPrompt,
+    );
+
+    const response = await getAiResponse(data.content, formattedChatHistory);
 
     const newAnswer = { type: "answer", text: response };
     const updatedHistoryWithAnswer = [...updatedHistoryWithQuestion, newAnswer];

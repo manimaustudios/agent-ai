@@ -8,10 +8,20 @@ if (!apiKey) throw new Error("apiKey is missing");
 
 const openai = new OpenAI({ apiKey });
 
-export async function getAiResponse(text: string): Promise<string> {
+type ChatMessage = {
+  role: string;
+  content: string;
+};
+
+export async function getAiResponse(
+  text: string,
+  formattedChatHistory: ChatMessage[],
+): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
-      messages: [{ role: "user", content: text }],
+      // messages: [{ role: "user", content: text }],
+      // @ts-ignore
+      messages: formattedChatHistory,
       model: "gpt-4o-mini",
     });
 
