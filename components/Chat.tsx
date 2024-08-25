@@ -12,18 +12,32 @@ const imgSrc =
 
 const chatList = [
   {
-    name: "General Chat",
-    type: "general",
+    name: "Geography Chat",
+    type: "geography",
+    prompt: "You are helpful assistant talking about geography.",
+    chatId: "1",
   },
   {
-    name: "Support Chat",
-    type: "support",
+    name: "Biology Chat",
+    type: "biology",
+    prompt: "You are helpful assistant talking about biology.",
+    chatId: "2",
   },
   {
-    name: "Sales Chat",
-    type: "sales",
+    name: "Science Chat",
+    type: "science",
+    prompt: "You are helpful assistant talking about science.",
+    chatId: "3",
   },
 ];
+
+type ChatSettings = {
+  name: string;
+  type: string;
+  prompt: string;
+  chatId: string;
+  imgUrl: string;
+};
 
 type ChatProps = {
   welcomeMessage: string;
@@ -35,6 +49,7 @@ type ChatProps = {
   hoursToWait: number;
   isMonthlyLimitReached: boolean;
   monthlyLimit: number;
+  chatList: ChatSettings[];
 };
 
 function Chat({
@@ -47,20 +62,36 @@ function Chat({
   hoursToWait,
   isMonthlyLimitReached,
   monthlyLimit,
+  chatList,
 }: ChatProps) {
   const {
     chatHistory,
     setChatHistory,
     startNewSession,
     currentSessionId,
+    sessions,
     currentChatType,
   } = useChat();
 
-  const handleStartNewChat = (chatType: string, chatName: string) => {
+  const handleStartNewChat = (
+    chatType: string,
+    chatName: string,
+    pickedChatId: string,
+  ) => {
     const welcomeText = { type: "answer", text: welcomeMessage };
-    const sessionId = startNewSession(chatType, chatName);
+    const sessionId = startNewSession(chatType, chatName, pickedChatId);
     setChatHistory([welcomeText], chatType, sessionId);
   };
+
+  const currentSessionObject = sessions.find(
+    (session) => session.sessionId === currentSessionId,
+  );
+
+  const currentChatFromList = chatList.find(
+    (chat) => chat.chatId === currentSessionObject?.chatId,
+  );
+
+  console.log("currentPrompt", currentChatFromList?.prompt ?? "No prompt");
 
   return (
     <>
@@ -98,12 +129,14 @@ function Chat({
               >
                 <button
                   className="relative size-36 rounded-full focus:outline-none"
-                  onClick={() => handleStartNewChat(chat.type, chat.name)}
+                  onClick={() =>
+                    handleStartNewChat(chat.type, chat.name, chat.chatId)
+                  }
                 >
                   <Image
                     alt="person face"
                     priority
-                    src={imgSrc}
+                    src={chat.imgUrl}
                     fill
                     className="absoulute z-0 rounded-full object-cover opacity-80 hover:opacity-100"
                   />
@@ -128,6 +161,7 @@ function Chat({
             hoursToWait={hoursToWait}
             isMonthlyLimitReached={isMonthlyLimitReached}
             monthlyLimit={monthlyLimit}
+            currentPrompt={currentChatFromList?.prompt ?? ""}
           />
         )}
       </div>

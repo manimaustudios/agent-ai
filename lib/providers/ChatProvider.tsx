@@ -8,18 +8,19 @@ import React, {
   ReactNode,
 } from "react";
 
-interface ChatMessage {
+type ChatMessage = {
   type: string;
   text: string;
-}
+};
 
-interface ChatSession {
+type ChatSession = {
   chatType: string;
   sessionId: string;
   chatName: string;
-}
+  chatId: string;
+};
 
-interface ChatContextProps {
+type ChatContextProps = {
   chatHistory: ChatMessage[];
   setChatHistory: (
     messages: ChatMessage[],
@@ -29,12 +30,16 @@ interface ChatContextProps {
   ) => void;
   loadChatHistory: (chatType: string, sessionId: string) => void;
   deleteChatHistory: (chatType: string, sessionId: string) => void;
-  startNewSession: (chatType: string, chatName: string) => string;
+  startNewSession: (
+    chatType: string,
+    chatName: string,
+    chatId: string,
+  ) => string;
   sessions: ChatSession[];
   deleteSession: (chatType: string, sessionId: string) => void;
   currentSessionId: string;
   currentChatType: string;
-}
+};
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
@@ -94,17 +99,6 @@ export function ChatProvider({ children }: ChatProviderProps) {
     }
   };
 
-  // const loadChatHistory = (chatType: string, sessionId: string) => {
-  //   const savedHistory = localStorage.getItem(`${chatType}-${sessionId}`);
-  //   if (savedHistory) {
-  //     setChatHistoryState(JSON.parse(savedHistory));
-  //     setCurrentChatType(chatType);
-  //     setCurrentSessionId(sessionId);
-  //   } else {
-  //     setChatHistoryState([]);
-  //   }
-  // };
-
   const loadChatHistory = (chatType: string, sessionId: string) => {
     const savedHistory = localStorage.getItem(`${chatType}-${sessionId}`);
     if (savedHistory) {
@@ -128,20 +122,11 @@ export function ChatProvider({ children }: ChatProviderProps) {
     deleteSession(chatType, sessionId);
   };
 
-  // const startNewSession = (chatType: string, chatName: string) => {
-  //   const newSessionId = Date.now().toString(); // Generate a unique session ID using timestamp
-  //   setCurrentChatType(chatType);
-  //   setCurrentSessionId(newSessionId);
-  //   setChatHistoryState([]); // Clear chat history for the new session
-  //   // Add the new session to the sessions list
-  //   setSessions((prevSessions) => [
-  //     ...prevSessions,
-  //     { chatType, sessionId: newSessionId, chatName },
-  //   ]);
-  //   return newSessionId;
-  // };
-
-  const startNewSession = (chatType: string, chatName: string) => {
+  const startNewSession = (
+    chatType: string,
+    chatName: string,
+    chatId: string,
+  ) => {
     const newSessionId = Date.now().toString(); // Generate a unique session ID using timestamp
     setChatHistoryState([]); // Clear chat history for the new session BEFORE setting session IDs
     setCurrentChatType(chatType);
@@ -150,7 +135,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
     // Add the new session to the sessions list
     setSessions((prevSessions) => [
       ...prevSessions,
-      { chatType, sessionId: newSessionId, chatName },
+      { chatType, sessionId: newSessionId, chatName, chatId },
     ]);
 
     return newSessionId;
