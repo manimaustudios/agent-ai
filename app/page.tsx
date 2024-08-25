@@ -1,5 +1,6 @@
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { getAllChats } from "@/lib/actions/chats";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -25,7 +26,9 @@ const chats = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const chatList = await getAllChats();
+
   return (
     <>
       <main className="mx-auto flex min-h-screen max-w-screen-lg flex-col items-center justify-center space-y-4 px-4 text-center">
@@ -48,7 +51,7 @@ export default function Home() {
         </Button>
         <p className="">Get Started With Your AI Therapist</p>
         <div className="flex w-full max-w-screen-sm flex-wrap justify-center gap-10 pt-6">
-          {chats.map((chat, i) => (
+          {chatList.map((chat, i) => (
             <div
               key={`chatType-${i}`}
               className="flex flex-col items-center justify-center gap-2"
@@ -57,7 +60,7 @@ export default function Home() {
                 <Image
                   alt=""
                   priority
-                  src={imgSrc}
+                  src={chat.imgUrl}
                   fill
                   className="absolute z-0 rounded-full object-cover"
                 />
