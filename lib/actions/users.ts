@@ -21,6 +21,7 @@ interface User {
   subscriptionId?: string;
   firstMsgTimeMonthly?: Timestamp;
   msgAmountMonthly: number;
+  currentChatId?: string;
 }
 
 export async function getUserDocument(userId: string): Promise<User | null> {
@@ -50,6 +51,7 @@ async function createUserDocument(
     createdAt: new Date().toISOString(),
     msgAmount: 0,
     msgAmountMonthly: 0,
+    currentChatId: "",
   };
 
   await setDoc(doc(db, "users", userId), {
@@ -59,8 +61,8 @@ async function createUserDocument(
     msgAmount: 0,
     msgAmountMonthly: 0,
     firstMsgTime: null,
+    currentChatId: "",
   });
-  console.log("User document created successfully.");
   return userData;
 }
 
@@ -71,13 +73,11 @@ export async function ensureUserDocumentExists(
   if (!userId || !userEmail) {
     throw new Error("User ID or email is missing.");
   }
-
   let userData = await getUserDocument(userId);
 
   if (userData === null) {
     userData = await createUserDocument(userId, userEmail);
   }
-
   return userData;
 }
 
@@ -198,7 +198,25 @@ export async function hasPremiumPlan(
 
     return false; // Subscription is expired
   } catch (error) {
-    console.error("Error checking premium plan:", error);
+    console.log("Error checking premium plan:", error);
     return false;
+  }
+}
+
+export async function updateCurrentChatId(
+  userId: string | null,
+  chatId: string | undefined,
+) {
+  console.log("chatID in server action:", chatId);
+  try {
+    if (!userId) return;
+
+    const userDocRef = doc(db, "users", userId);
+    await updateDoc(userDocRef, {
+      currentChatId: chatId ?? "",
+    });
+    revalidatePath("/agent");
+  } catch (error) {
+    console.log("Error updating current chat ID:", error);
   }
 }
