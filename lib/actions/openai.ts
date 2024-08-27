@@ -19,7 +19,6 @@ export async function getAiResponse(
 ): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
-      // messages: [{ role: "user", content: text }],
       // @ts-ignore
       messages: formattedChatHistory,
       model: "gpt-4o-mini",

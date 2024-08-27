@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { Progress } from "./ui/progress";
 
 type ProgressBarProps = {

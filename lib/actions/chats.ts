@@ -9,6 +9,8 @@ interface Chat {
   prompt: string;
   chatId: string;
   imgUrl: string;
+  seoTitle: string;
+  seoDescription: string;
 }
 
 export async function getAllChats(): Promise<Chat[]> {

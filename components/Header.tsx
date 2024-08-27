@@ -1,4 +1,5 @@
 import { signIn, signOut } from "@logto/next/server-actions";
+
 import SignOut from "@/app/auth/SignOut";
 import SignIn from "@/app/auth/SignIn";
 import { auth } from "@/lib/logto/auth";

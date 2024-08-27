@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useEffect, useState } from "react";
+import { FaChevronRight } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +28,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import LoadingSpinner from "./LoadingSpinner";
 import { getAiResponse } from "@/lib/actions/openai";
-import { FaChevronRight } from "react-icons/fa";
 import SignInDialog from "./SignInDialog";
 import { updateMsgAmount } from "@/lib/actions/users";
 import PaymentButton from "./PaymentButton";
