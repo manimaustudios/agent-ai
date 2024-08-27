@@ -1,35 +1,12 @@
 "use client";
 
+import React from "react";
+import Image from "next/image";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import React, { useState } from "react";
+
 import { ChatTextarea } from "./ChatTextarea";
 import { useChat } from "@/lib/providers/ChatProvider";
-import Image from "next/image";
-import SignInDialog from "./SignInDialog";
-
-const imgSrc =
-  "https://images.unsplash.com/photo-1579591919791-0e3737ae3808?q=80&w=1915&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
-const chatList = [
-  {
-    name: "Geography Chat",
-    type: "geography",
-    prompt: "You are helpful assistant talking about geography.",
-    chatId: "1",
-  },
-  {
-    name: "Biology Chat",
-    type: "biology",
-    prompt: "You are helpful assistant talking about biology.",
-    chatId: "2",
-  },
-  {
-    name: "Science Chat",
-    type: "science",
-    prompt: "You are helpful assistant talking about science.",
-    chatId: "3",
-  },
-];
+import { updateCurrentChatId } from "@/lib/actions/users";
 
 type ChatSettings = {
   name: string;
@@ -73,16 +50,6 @@ function Chat({
     currentChatType,
   } = useChat();
 
-  const handleStartNewChat = (
-    chatType: string,
-    chatName: string,
-    pickedChatId: string,
-  ) => {
-    const welcomeText = { type: "answer", text: welcomeMessage };
-    const sessionId = startNewSession(chatType, chatName, pickedChatId);
-    setChatHistory([welcomeText], chatType, sessionId);
-  };
-
   const currentSessionObject = sessions.find(
     (session) => session.sessionId === currentSessionId,
   );
@@ -91,7 +58,20 @@ function Chat({
     (chat) => chat.chatId === currentSessionObject?.chatId,
   );
 
-  console.log("currentPrompt", currentChatFromList?.prompt ?? "No prompt");
+  const handleStartNewChat = (
+    chatType: string,
+    chatName: string,
+    pickedChatId: string,
+  ) => {
+    const welcomeText = { type: "answer", text: welcomeMessage };
+    const sessionId = startNewSession(chatType, chatName, pickedChatId);
+
+    const updateChatId = async () => {
+      await updateCurrentChatId(userId, pickedChatId);
+    };
+    updateChatId();
+    setChatHistory([welcomeText], chatType, sessionId);
+  };
 
   return (
     <>
@@ -121,30 +101,32 @@ function Chat({
           </ScrollArea>
         ) : (
           // Chats to pick from
-          <div className="grid flex-1 grid-cols-3 md:px-6">
-            {chatList.map((chat, i) => (
-              <div
-                key={`chatType-${i}`}
-                className="flex flex-col items-center justify-center gap-3"
-              >
-                <button
-                  className="relative size-36 rounded-full focus:outline-none"
-                  onClick={() =>
-                    handleStartNewChat(chat.type, chat.name, chat.chatId)
-                  }
+          <ScrollArea className="flex flex-1 justify-center overflow-auto md:px-6">
+            <div className="grid flex-1 gap-5 sm:grid-cols-2 md:grid-cols-3 md:gap-0 md:px-6">
+              {chatList.map((chat, i) => (
+                <div
+                  key={`chatType-${i}`}
+                  className="flex flex-col items-center justify-center gap-3"
                 >
-                  <Image
-                    alt="person face"
-                    priority
-                    src={chat.imgUrl}
-                    fill
-                    className="absoulute z-0 rounded-full object-cover opacity-80 hover:opacity-100"
-                  />
-                </button>
-                <p className="">{chat.name}</p>
-              </div>
-            ))}
-          </div>
+                  <button
+                    className="relative size-24 rounded-full focus:outline-none md:size-36"
+                    onClick={() =>
+                      handleStartNewChat(chat.type, chat.name, chat.chatId)
+                    }
+                  >
+                    <Image
+                      alt="person face"
+                      priority
+                      src={chat.imgUrl}
+                      fill
+                      className="absoulute z-0 rounded-full object-cover opacity-80 hover:opacity-100"
+                    />
+                  </button>
+                  <p className="">{chat.name}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         )}
 
         {chatHistory?.length > 0 && (
