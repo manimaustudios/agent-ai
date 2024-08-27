@@ -1,15 +1,29 @@
 "use client";
 
-import { useChat } from "@/lib/providers/ChatProvider";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FaTimes } from "react-icons/fa";
 
-function ChatHistory() {
+import { useChat } from "@/lib/providers/ChatProvider";
+import { updateCurrentChatId } from "@/lib/actions/users";
+
+type ChatHistoryProps = {
+  userId: string | null;
+};
+
+function ChatHistory({ userId }: ChatHistoryProps) {
   const { sessions, loadChatHistory, deleteChatHistory, currentSessionId } =
     useChat();
 
-  const handleShowChatHistory = (chatType: string, sessionId: string) => {
+  const handleShowChatHistory = (
+    chatType: string,
+    sessionId: string,
+    chatId: string,
+  ) => {
     loadChatHistory(chatType, sessionId);
+    const updateChatId = async () => {
+      await updateCurrentChatId(userId, chatId);
+    };
+    updateChatId();
   };
 
   const handleDeleteChatHistory = (
@@ -34,7 +48,11 @@ function ChatHistory() {
                 key={`chat-${i}`}
                 className="group flex cursor-pointer items-center justify-between rounded-md px-1 py-1 hover:bg-foreground"
                 onClick={() =>
-                  handleShowChatHistory(session.chatType, session.sessionId)
+                  handleShowChatHistory(
+                    session.chatType,
+                    session.sessionId,
+                    session.chatId,
+                  )
                 }
               >
                 <p>{session.chatName}</p>

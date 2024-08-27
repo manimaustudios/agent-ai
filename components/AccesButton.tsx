@@ -5,11 +5,10 @@ import { logtoConfig } from "@/lib/logto/logto";
 import { signIn, signOut } from "@logto/next/server-actions";
 
 type Props = {
-  isAuth: boolean | undefined;
+  isAuthenticated: boolean | undefined;
 };
 
-async function AccesButton({ isAuth }: Props) {
-  const { isAuthenticated } = await auth();
+async function AccesButton({ isAuthenticated }: Props) {
   return (
     <div>
       {isAuthenticated ? (

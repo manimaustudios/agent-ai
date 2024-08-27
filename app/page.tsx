@@ -1,30 +1,9 @@
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { Button } from "@/components/ui/button";
-import { getAllChats } from "@/lib/actions/chats";
 import Image from "next/image";
 import Link from "next/link";
 
-const imgSrc =
-  "https://images.unsplash.com/photo-1579591919791-0e3737ae3808?q=80&w=1915&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
-const chats = [
-  {
-    name: "General Chat",
-    type: "general",
-  },
-  {
-    name: "Support Chat",
-    type: "support",
-  },
-  {
-    name: "Sales Chat",
-    type: "sales",
-  },
-  {
-    name: "Support Chat",
-    type: "support",
-  },
-];
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { getAllChats } from "@/lib/actions/chats";
 
 export default async function Home() {
   const chatList = await getAllChats();

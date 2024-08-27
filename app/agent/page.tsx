@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import Sidebar from "@/components/Sidebar";
 import Chat from "@/components/Chat";
 import { auth } from "@/lib/logto/auth";
@@ -12,6 +14,35 @@ import SubscriptionStatus from "@/components/SubscriptionStatus";
 import { getSettings } from "@/lib/actions/settings";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { getAllChats } from "@/lib/actions/chats";
+
+export async function metadata(): Promise<Metadata> {
+  const { userId, userEmail } = await auth();
+
+  let metaTitle = "Online Therapist Chat";
+  let metaDescription =
+    "Explore our unique AI therapy chatbots, each designed to offer personalized mental health support. From cognitive-behavioral therapy to mindfulness coaching, our AI therapists provide accessible, confidential, and effective solutions for stress, anxiety, depression, and more. Get tailored therapy anytime, anywhere.";
+
+  if (userId && userEmail) {
+    const user = await ensureUserDocumentExists(userId, userEmail);
+    const chats = await getAllChats();
+
+    const currentChat = user?.currentChatId
+      ? chats.find((chat) => chat.chatId === user.currentChatId)
+      : null;
+
+    if (currentChat?.seoTitle) {
+      metaTitle = currentChat.seoTitle;
+    }
+    if (currentChat?.seoDescription) {
+      metaDescription = currentChat.seoDescription;
+    }
+  }
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+  };
+}
 
 async function Page() {
   const { userId, userEmail, isAuthenticated } = await auth();
@@ -44,8 +75,6 @@ async function Page() {
 
   const chatList = await getAllChats();
 
-  // console.log("all chats", chatList);
-
   const isMonthlyLimitReached =
     (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
 
@@ -54,7 +83,7 @@ async function Page() {
       <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
         {isAuthenticated && <SubscriptionStatus userId={userId} />}
         <div className="flex gap-4">
-          <AccesButton isAuth={isAuthenticated} />
+          <AccesButton isAuthenticated={isAuthenticated} />
           <ThemeToggle />
         </div>
       </Sidebar>

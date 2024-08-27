@@ -1,5 +1,9 @@
 "use client";
 
+import Link from "next/link";
+import { useState } from "react";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+
 import {
   Dialog,
   DialogContent,
@@ -8,9 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import Link from "next/link";
-import { useState } from "react";
 import { Button } from "./ui/button";
 
 function DisclaimerDialog() {

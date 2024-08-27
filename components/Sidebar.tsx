@@ -31,7 +31,7 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
           </div>
           <NewChatButton />
 
-          {isAuthenticated && <ChatHistory />}
+          {isAuthenticated && <ChatHistory userId={userId} />}
         </div>
         <div className="mt-auto space-y-2">
           {/* server components */}

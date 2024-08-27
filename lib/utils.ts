@@ -15,8 +15,6 @@ export function getFormattedChatHistory(
   newQuestion: ChatMessage,
   currentPrompt: string,
 ) {
-  // first msg type prompt
-
   const fullHistory = [
     {
       type: "system",
