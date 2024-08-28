@@ -4,19 +4,15 @@ import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { db } from "../firebase";
 import {
-  collection,
-  query,
-  where,
-  getDocs,
   doc,
   updateDoc,
   setDoc,
   getDoc,
   FirestoreError,
   DocumentSnapshot,
-  QueryDocumentSnapshot,
   DocumentData,
 } from "firebase/firestore";
+import { revalidatePath } from "next/cache";
 
 const price =
   process.env.ENV_NODE === "development"
@@ -116,7 +112,6 @@ export async function handleCheckoutSessionCompleted(
 }
 
 export async function handleSubscriptionEvent(event: Stripe.Event) {
-  // Extract the subscription object based on event type
   let subscriptionId: string;
 
   switch (event.type) {
@@ -188,7 +183,6 @@ export async function handleSubscriptionEvent(event: Stripe.Event) {
     if (subscriptionDocSnap && Object.keys(updates).length > 0) {
       const subscriptionDocRef = subscriptionDocSnap.ref;
       await updateDoc(subscriptionDocRef, updates);
-      console.log("Subscription document updated for event:", event.type);
     }
   } catch (error) {
     console.error("Error handling subscription event:", error);
@@ -233,6 +227,43 @@ async function createSubscriptionDocument(
     return subscriptionDocSnap;
   } catch (error) {
     console.error("Error creating subscription document:", error);
+    throw error;
+  }
+}
+
+export async function cancelSubscription(userId: string | null) {
+  if (!userId) {
+    throw new Error("No user ID provided");
+  }
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2024-06-20",
+  });
+
+  try {
+    // Fetch user document to get their subscription ID
+    const userDocRef = doc(db, "users", userId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      throw new Error("User not found");
+    }
+
+    const userData = userDocSnap.data();
+    const subscriptionId = userData?.subscriptionId;
+
+    if (!subscriptionId) {
+      throw new Error("No subscription found for user");
+    }
+
+    await stripe.subscriptions.cancel(subscriptionId);
+
+    await updateDoc(userDocRef, {
+      status: "canceled",
+    });
+
+    revalidatePath("/agent");
+  } catch (error) {
     throw error;
   }
 }
