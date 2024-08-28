@@ -3,6 +3,7 @@
 import { checkoutPayment } from "@/lib/actions/transaction";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 type PaymentButtonProps = {
   userId: string | null;
@@ -18,7 +19,12 @@ function PaymentButton({ userId, cta }: PaymentButtonProps) {
     setIsLoading(false);
   };
   return (
-    <Button onClick={() => handlePayment()}>{cta ? cta : "Get Premium"}</Button>
+    <div className="flex items-center justify-start gap-3">
+      <Button onClick={() => handlePayment()}>
+        {cta ? cta : "Get Premium"}
+      </Button>
+      {isLoading && <LoadingSpinner className="text-primary" />}
+    </div>
   );
 }
 

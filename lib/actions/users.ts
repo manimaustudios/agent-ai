@@ -12,7 +12,7 @@ import { db } from "@/lib/firebase";
 import { getSettings } from "./settings";
 import { revalidatePath } from "next/cache";
 
-interface User {
+type User = {
   email: string;
   createdAt: string;
   status?: string;
@@ -22,7 +22,7 @@ interface User {
   firstMsgTimeMonthly?: Timestamp;
   msgAmountMonthly: number;
   currentChatId?: string;
-}
+};
 
 export async function getUserDocument(userId: string): Promise<User | null> {
   const userDocRef = doc(db, "users", userId);

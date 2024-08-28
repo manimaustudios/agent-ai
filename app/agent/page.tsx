@@ -5,6 +5,7 @@ import Chat from "@/components/Chat";
 import { auth } from "@/lib/logto/auth";
 import {
   ensureUserDocumentExists,
+  getUserDocument,
   hasLimitLeft,
   hasPremiumPlan,
 } from "@/lib/actions/users";
@@ -14,6 +15,7 @@ import SubscriptionStatus from "@/components/SubscriptionStatus";
 import { getSettings } from "@/lib/actions/settings";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { getAllChats } from "@/lib/actions/chats";
+import { UserProfileDropdown } from "@/components/UserProfileDropdown";
 
 export async function metadata(): Promise<Metadata> {
   const { userId, userEmail } = await auth();
@@ -81,10 +83,24 @@ async function Page() {
   return (
     <>
       <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
-        {isAuthenticated && <SubscriptionStatus userId={userId} />}
-        <div className="flex gap-4">
+        {isAuthenticated && (
+          <SubscriptionStatus
+            userId={userId}
+            msgAmountLimit={msgAmountLimit}
+            status={userData?.status ?? ""}
+            msgAmount={userData?.msgAmount ?? 0}
+          />
+        )}
+        <div className="flex gap-1">
           <AccesButton isAuthenticated={isAuthenticated} />
           <ThemeToggle />
+          {isAuthenticated && (
+            <UserProfileDropdown
+              userId={userId}
+              status={userData?.status}
+              userEmail={userEmail ?? ""}
+            />
+          )}
         </div>
       </Sidebar>
       <Chat

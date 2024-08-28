@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
@@ -41,6 +41,7 @@ function Chat({
   monthlyLimit,
   chatList,
 }: ChatProps) {
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const {
     chatHistory,
     setChatHistory,
@@ -57,6 +58,26 @@ function Chat({
   const currentChatFromList = chatList.find(
     (chat) => chat.chatId === currentSessionObject?.chatId,
   );
+
+  const scrollToBottom = (container: HTMLElement | null, smooth = false) => {
+    if (container?.children.length) {
+      const lastElement = container?.lastChild as HTMLElement;
+
+      lastElement?.scrollIntoView({
+        behavior: smooth ? "smooth" : "auto",
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom(scrollAreaRef.current, true);
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom(scrollAreaRef.current, true);
+  }, [chatHistory]);
 
   const handleStartNewChat = (
     chatType: string,
@@ -81,7 +102,10 @@ function Chat({
         {chatHistory?.length > 0 ? (
           // Chat history interface
           <ScrollArea className="flex-1 overflow-auto md:px-6">
-            <div className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line">
+            <div
+              ref={scrollAreaRef}
+              className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line"
+            >
               {chatHistory.map((item, i) => (
                 <React.Fragment key={`text-${i}`}>
                   {item.type && item.text && (

@@ -34,7 +34,5 @@ export function getFormattedChatHistory(
     }
   });
 
-  console.log("formattedChatHistory: ", formattedChatHistory);
-
   return formattedChatHistory;
 }
