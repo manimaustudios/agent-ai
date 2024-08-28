@@ -1,36 +1,43 @@
-import { getUserDocument } from "@/lib/actions/users";
 import PaymentButton from "./PaymentButton";
 import ProgressBar from "./ProgressBar";
-import { getSettings } from "@/lib/actions/settings";
+
+type UserData = {
+  status?: string;
+  msgAmount?: number;
+};
+
+type User = {
+  // status?: string;
+  // msgAmount?: number;
+  userData: UserData;
+};
 
 type Props = {
   userId: string | null;
+  msgAmountLimit: number;
+  // userData: User | null;
+  status?: string;
+  msgAmount?: number;
 };
 
-async function SubscriptionStatus({ userId }: Props) {
-  let data = null;
-  let settings = null;
-
-  if (userId) {
-    data = await getUserDocument(userId);
-    settings = await getSettings();
-  }
-
+async function SubscriptionStatus({
+  userId,
+  msgAmountLimit,
+  status,
+  msgAmount,
+}: Props) {
   return (
     <div>
-      {data?.status !== "active" && (
-        <ProgressBar
-          amount={data?.msgAmount ?? 0}
-          limit={settings?.msgAmountLimit ?? 0}
-        />
+      {status !== "active" && (
+        <ProgressBar amount={msgAmount ?? 0} limit={msgAmountLimit} />
       )}
       <div className="my-3 ml-1 pt-2 text-sm">
         Plan:{" "}
         <span className="ml-1 rounded-md bg-slate-400 px-1 font-semibold text-primary">
-          {data?.status === "active" ? "Premium" : "Free"}
+          {status === "active" ? "Premium" : "Free"}
         </span>
       </div>
-      {data?.status !== "active" && <PaymentButton userId={userId} />}
+      {status !== "active" && <PaymentButton userId={userId} />}
     </div>
   );
 }
