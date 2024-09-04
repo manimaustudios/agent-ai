@@ -14,6 +14,7 @@ type ChatSettings = {
   prompt: string;
   chatId: string;
   imgUrl: string;
+  welcomeMsg: string;
 };
 
 type ChatProps = {
@@ -30,7 +31,6 @@ type ChatProps = {
 };
 
 function Chat({
-  welcomeMessage,
   isAuthenticated,
   hasLimit,
   hasPremium,
@@ -84,7 +84,12 @@ function Chat({
     chatName: string,
     pickedChatId: string,
   ) => {
-    const welcomeText = { type: "answer", text: welcomeMessage };
+    const selectedChat = chatList.find((chat) => chat.chatId === pickedChatId);
+
+    const welcomeText = {
+      type: "answer",
+      text: selectedChat?.welcomeMsg ?? "Hi, how are you today?",
+    };
     const sessionId = startNewSession(chatType, chatName, pickedChatId);
 
     const updateChatId = async () => {

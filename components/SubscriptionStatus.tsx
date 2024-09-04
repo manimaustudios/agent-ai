@@ -1,21 +1,9 @@
 import PaymentButton from "./PaymentButton";
 import ProgressBar from "./ProgressBar";
 
-type UserData = {
-  status?: string;
-  msgAmount?: number;
-};
-
-type User = {
-  // status?: string;
-  // msgAmount?: number;
-  userData: UserData;
-};
-
 type Props = {
   userId: string | null;
   msgAmountLimit: number;
-  // userData: User | null;
   status?: string;
   msgAmount?: number;
 };

@@ -1,6 +1,5 @@
 import SignIn from "@/app/auth/SignIn";
 import SignOut from "@/app/auth/SignOut";
-import { auth } from "@/lib/logto/auth";
 import { logtoConfig } from "@/lib/logto/logto";
 import { signIn, signOut } from "@logto/next/server-actions";
 

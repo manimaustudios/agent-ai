@@ -1,17 +1,16 @@
 "use client";
 
 import { FaCog } from "react-icons/fa";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cancelSubscription } from "@/lib/actions/transaction";
 import PaymentButton from "./PaymentButton";
-import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 
 type UserProfileDropdownProps = {
@@ -52,7 +51,12 @@ export function UserProfileDropdown({
 
         <div>
           <p className="text-xs">Support e-mail:</p>
-          <p className="text-sm text-muted-foreground">zzzz@zzz.com</p>
+          <a
+            href="mailto:info@aitherapistfree.com"
+            className="text-sm text-muted-foreground hover:text-primary hover:underline"
+          >
+            info@aitherapistfree.com
+          </a>
         </div>
 
         <div className="text-sm">

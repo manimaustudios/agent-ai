@@ -11,6 +11,7 @@ interface Chat {
   imgUrl: string;
   seoTitle: string;
   seoDescription: string;
+  welcomeMsg: string;
 }
 
 export async function getAllChats(): Promise<Chat[]> {

@@ -196,7 +196,7 @@ function SubmitFormButton({
               </div>
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-sm">
+          <DialogContent className="max-w-md py-10">
             <DialogHeader className="space-y-6">
               <DialogTitle className="text-center">
                 You&#39;ve been chatting a lot.
@@ -211,17 +211,17 @@ function SubmitFormButton({
                   </>
                 ) : (
                   <>
-                    <span>
+                    <span className="inline-block py-2">
                       You&#39;ve sent more than {messageLimit} messages in the
                       last {hoursToWait} hours. To keep this service free, we
                       have to limit free usage.
                     </span>
-                    <span>
+                    <span className="inline-block py-2">
                       Subscribe to the unlimited plan for just $9/month to
                       continue chatting. Cancel anytime and save 90-95% compared
                       to a single human therapist session!
                     </span>
-                    <span>
+                    <span className="inline-block py-2">
                       You can also come back in a few hours and chat for free.
                     </span>
                   </>
