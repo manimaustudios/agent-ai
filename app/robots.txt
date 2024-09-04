@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aitherapistfree.com/sitemap.xml

@@ -40,7 +40,7 @@ export async function checkoutPayment(userId: string | null) {
     cancel_url:
       process.env.ENV_NODE === "development"
         ? "http://localhost:3000"
-        : process.env.PRODUCTION_BASE_URL,
+        : `${process.env.PRODUCTION_BASE_URL}/agent`,
   });
 
   redirect(session.url!);

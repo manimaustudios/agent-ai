@@ -24,7 +24,7 @@ function DisclaimerDialog() {
           <DialogTitle className="text-center">
             Important - Please Read:
           </DialogTitle>
-          <DialogDescription className="max-h-[50vh] text-center">
+          <DialogDescription className="max-h-[50vh] text-left">
             <ScrollArea className="h-full overflow-y-auto rounded-md px-2">
               <p className="pb-3 text-sm">
                 This service is not a substitute for professional crisis
@@ -46,11 +46,11 @@ function DisclaimerDialog() {
                 By using this service, you acknowledge that it is not a
                 replacement for therapy, counseling, or professional mental
                 health care. Your use of this service is governed by our{" "}
-                <Link href="/agent" className="text-blue-600">
+                <Link href="/terms-of-service" className="text-blue-600">
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="/agent" className="text-blue-600">
+                <Link href="/privacy-policy" className="text-blue-600">
                   Privacy Policy
                 </Link>
                 .
@@ -66,7 +66,7 @@ function DisclaimerDialog() {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <div className="mx-auto text-center">
+          <div className="mx-auto px-2 text-left">
             <Button onClick={() => setIsOpen(false)}>I Agree</Button>
             <p className="pt-2 text-xs text-slate-400">
               Free AI Therapist is not a licensed therapist, LMHC, LMFT, or
