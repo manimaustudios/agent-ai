@@ -32,6 +32,7 @@ import SignInDialog from "./SignInDialog";
 import { updateMsgAmount } from "@/lib/actions/users";
 import PaymentButton from "./PaymentButton";
 import { getFormattedChatHistory } from "@/lib/utils";
+import { AuthDialog } from "./AuthDialog";
 
 type ChatTextareaProps = {
   setChatHistory: any;
@@ -149,7 +150,9 @@ export function ChatTextarea({
               monthlyLimit={monthlyLimit}
             />
           ) : (
-            <SignInDialog />
+            // Logto sign in dialog
+            // <SignInDialog />
+            <AuthDialog />
           )}
         </div>
       </form>

@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { PHProvider } from "@/lib/providers/PHProvider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -10,9 +11,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Your Online Therapy Chats",
+  title: "Free Online AI Therapist Chatbot | Mental Health & Self-Help Support",
   description:
-    "Get personalized mental health support from our AI therapy chatbots. From cognitive-behavioral therapy to mindfulness coaching, our AI therapists provide accessible, confidential, and effective solutions for stress, anxiety, depression, and more.",
+    "Experience free therapy online with our AI therapist chatbot, designed to support your mental well-being and self-help journey. Whether you're seeking guidance for mental health, or looking for a virtual therapist, our platform offers personalized support to help you manage stress, anxiety, and emotional challenges. Prioritize your mental health with convenient and confidential conversations, anytime, anywhere.",
 };
 
 export default function RootLayout({
@@ -30,7 +31,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <ClerkProvider>{children}</ClerkProvider>
           </ThemeProvider>
         </body>
       </PHProvider>
