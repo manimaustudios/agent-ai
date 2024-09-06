@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { SignedIn, SignedOut, SignOutButton, UserButton } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 import Sidebar from "@/components/Sidebar";
 import Chat from "@/components/Chat";
-import { auth } from "@/lib/logto/auth";
+// import { auth } from "@/lib/logto/auth";
 import {
   ensureUserDocumentExists,
   getUserDocument,
@@ -16,9 +18,16 @@ import { getSettings } from "@/lib/actions/settings";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { getAllChats } from "@/lib/actions/chats";
 import { UserProfileDropdown } from "@/components/UserProfileDropdown";
+import { AuthDialog } from "@/components/AuthDialog";
+import { Button } from "@/components/ui/button";
 
 export async function metadata(): Promise<Metadata> {
-  const { userId, userEmail } = await auth();
+  // Logto auth
+  // const { userId, userEmail } = await auth();
+
+  const { userId }: { userId: string | null } = auth();
+  const user = await currentUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
 
   let metaTitle = "Online Therapist Chat";
   let metaDescription =
@@ -47,7 +56,15 @@ export async function metadata(): Promise<Metadata> {
 }
 
 async function Page() {
-  const { userId, userEmail, isAuthenticated } = await auth();
+  // Logto auth
+  // const { userId, userEmail, isAuthenticated } = await auth();
+
+  const { userId }: { userId: string | null } = auth();
+  const user = await currentUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
+
+  // To keep based on logto logic work
+  const isAuthenticated = !!userId;
 
   if (!isAuthenticated || !userId || !userEmail) {
     console.error("User is not authenticated or missing user data.");
@@ -91,8 +108,18 @@ async function Page() {
             msgAmount={userData?.msgAmount ?? 0}
           />
         )}
-        <div className="flex gap-1">
-          <AccesButton isAuthenticated={isAuthenticated} />
+        <div className="flex items-center gap-2">
+          {/* Logto auth */}
+          {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
+          <SignedIn>
+            {/* <UserButton /> */}
+            <SignOutButton>
+              <Button>Sign Out</Button>
+            </SignOutButton>
+          </SignedIn>
+          <SignedOut>
+            <AuthDialog />
+          </SignedOut>
           <ThemeToggle />
           {isAuthenticated && (
             <UserProfileDropdown

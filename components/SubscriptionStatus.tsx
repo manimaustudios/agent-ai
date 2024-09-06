@@ -1,7 +1,8 @@
+import { auth, currentUser } from "@clerk/nextjs/server";
 import PaymentButton from "./PaymentButton";
 import ProgressBar from "./ProgressBar";
 
-type Props = {
+type SubscriptionStatusProps = {
   userId: string | null;
   msgAmountLimit: number;
   status?: string;
@@ -13,7 +14,7 @@ async function SubscriptionStatus({
   msgAmountLimit,
   status,
   msgAmount,
-}: Props) {
+}: SubscriptionStatusProps) {
   return (
     <div>
       {status !== "active" && (

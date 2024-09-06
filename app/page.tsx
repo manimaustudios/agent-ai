@@ -1,10 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { getAllChats } from "@/lib/actions/chats";
-import { FaHome } from "react-icons/fa";
 import Navbar from "@/components/Navbar";
 
 export default async function Home() {
@@ -32,7 +30,7 @@ export default async function Home() {
             </Link>
           </Button>
           <p className="">Get Started With Your AI Therapist</p>
-          <div className="flex w-full max-w-screen-sm flex-wrap justify-center gap-10 pt-6">
+          <div className="mx-auto flex w-full max-w-screen-sm flex-wrap justify-center gap-10 pt-6">
             {chatList.map((chat, i) => (
               <div
                 key={`chatType-${i}`}
