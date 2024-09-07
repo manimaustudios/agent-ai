@@ -102,7 +102,12 @@ function Chat({
   return (
     <>
       <div className="mx-auto flex h-screen w-full max-w-screen-xl flex-col bg-background px-2">
-        <div className="py-3 text-center">AI Chat Agent</div>
+        <div className="mb-3 flex items-center justify-center gap-3 py-3">
+          <div>
+            <Image src="/logo.png" alt="logo" width={40} height={40} />
+          </div>
+          {currentChatFromList?.name ?? "AITherapistFree"}
+        </div>
 
         {chatHistory?.length > 0 ? (
           // Chat history interface

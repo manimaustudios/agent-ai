@@ -31,7 +31,15 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <ClerkProvider>{children}</ClerkProvider>
+            <ClerkProvider
+              appearance={{
+                variables: {
+                  colorPrimary: "hsl(262.1 83.3% 57.8%)",
+                },
+              }}
+            >
+              {children}
+            </ClerkProvider>
           </ThemeProvider>
         </body>
       </PHProvider>

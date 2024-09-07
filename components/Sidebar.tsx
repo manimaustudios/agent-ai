@@ -18,7 +18,7 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
   return (
     <>
       <div
-        className={`${isOpen ? "flex" : "hidden"} h-screen w-56 flex-col bg-secondary/50 p-2`}
+        className={`${isOpen ? "flex" : "hidden"} h-screen w-60 flex-col bg-secondary/50 p-2`}
       >
         <div className="space-y-4">
           <div className="flex items-center justify-start gap-2">
