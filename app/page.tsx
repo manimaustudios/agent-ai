@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
 import { getAllChats } from "@/lib/actions/chats";
 import Navbar from "@/components/Navbar";
+import CallToAcrionButton from "@/components/CallToAcrionButton";
 
 export default async function Home() {
   const chatList = await getAllChats();
@@ -24,11 +24,7 @@ export default async function Home() {
             therapist.
           </p>
           <p className="text-sm text-muted-foreground">24 / 7 For FREE</p>
-          <Button asChild className="px-6 py-6">
-            <Link href="/agent" className="text-base">
-              Start Chatting
-            </Link>
-          </Button>
+          <CallToAcrionButton />
           <p className="">Get Started With Your AI Therapist</p>
           <div className="mx-auto flex w-full max-w-screen-sm flex-wrap justify-center gap-10 pt-6">
             {chatList.map((chat, i) => (
