@@ -7,6 +7,7 @@ interface Settings {
   msgAmountLimit: number;
   hoursToWait: number;
   msgAmountLimitMonthly: number;
+  price: number;
 }
 
 export async function getSettings(): Promise<Settings> {
@@ -23,5 +24,6 @@ export async function getSettings(): Promise<Settings> {
     msgAmountLimit: 0,
     hoursToWait: 0,
     msgAmountLimitMonthly: 0,
+    price: 0,
   };
 }

@@ -48,6 +48,7 @@ type ChatTextareaProps = {
   isMonthlyLimitReached: boolean;
   monthlyLimit: number;
   currentPrompt: string;
+  price: number;
 };
 
 const ChatTextareaLimits = z.object({
@@ -71,6 +72,7 @@ export function ChatTextarea({
   isMonthlyLimitReached,
   monthlyLimit,
   currentPrompt,
+  price,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
   const canSendMessage = hasLimit;
@@ -148,6 +150,7 @@ export function ChatTextarea({
               hoursToWait={hoursToWait}
               isMonthlyLimitReached={isMonthlyLimitReached}
               monthlyLimit={monthlyLimit}
+              price={price}
             />
           ) : (
             // Logto sign in dialog
@@ -168,6 +171,7 @@ type SubmitFormButtonProps = {
   hoursToWait: number;
   isMonthlyLimitReached: boolean;
   monthlyLimit: number;
+  price: number;
 };
 
 function SubmitFormButton({
@@ -178,6 +182,7 @@ function SubmitFormButton({
   hoursToWait,
   isMonthlyLimitReached,
   monthlyLimit,
+  price,
 }: SubmitFormButtonProps) {
   return (
     <>
@@ -220,7 +225,7 @@ function SubmitFormButton({
                       have to limit free usage.
                     </span>
                     <span className="inline-block py-2">
-                      Subscribe to the unlimited plan for just $9/month to
+                      Subscribe to the unlimited plan for just ${price}/month to
                       continue chatting. Cancel anytime and save 90-95% compared
                       to a single human therapist session!
                     </span>

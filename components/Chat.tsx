@@ -28,6 +28,7 @@ type ChatProps = {
   isMonthlyLimitReached: boolean;
   monthlyLimit: number;
   chatList: ChatSettings[];
+  price: number;
 };
 
 function Chat({
@@ -40,6 +41,7 @@ function Chat({
   isMonthlyLimitReached,
   monthlyLimit,
   chatList,
+  price,
 }: ChatProps) {
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const {
@@ -178,6 +180,7 @@ function Chat({
             isMonthlyLimitReached={isMonthlyLimitReached}
             monthlyLimit={monthlyLimit}
             currentPrompt={currentChatFromList?.prompt ?? ""}
+            price={price}
           />
         )}
       </div>

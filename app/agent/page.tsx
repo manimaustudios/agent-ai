@@ -82,7 +82,7 @@ async function Page() {
     console.error("Error fetching user data:", error);
   }
 
-  const { msgAmountLimit, hoursToWait, msgAmountLimitMonthly } =
+  const { msgAmountLimit, hoursToWait, msgAmountLimitMonthly, price } =
     await getSettings();
 
   const hasLimit = await hasLimitLeft(
@@ -92,8 +92,6 @@ async function Page() {
     hoursToWait,
     msgAmountLimitMonthly,
   );
-
-  console.log("USER DATA MSG AMT: ", userData?.msgAmount);
 
   const hasPremium = await hasPremiumPlan(userId, userData);
 
@@ -145,6 +143,7 @@ async function Page() {
         hoursToWait={hoursToWait ?? 0}
         isMonthlyLimitReached={isMonthlyLimitReached}
         monthlyLimit={msgAmountLimitMonthly ?? 0}
+        price={price ?? 0}
         chatList={chatList}
       />
       {!isAuthenticated && <DisclaimerDialog />}
