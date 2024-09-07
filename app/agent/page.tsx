@@ -92,6 +92,9 @@ async function Page() {
     hoursToWait,
     msgAmountLimitMonthly,
   );
+
+  console.log("USER DATA MSG AMT: ", userData?.msgAmount);
+
   const hasPremium = await hasPremiumPlan(userId, userData);
 
   const chatList = await getAllChats();
@@ -107,7 +110,6 @@ async function Page() {
             userId={userId}
             msgAmountLimit={msgAmountLimit}
             status={userData?.status ?? ""}
-            msgAmount={userData?.msgAmount ?? 0}
           />
         )}
         <div className="flex items-center gap-2">
