@@ -152,7 +152,7 @@ export function ChatTextarea({
           ) : (
             // Logto sign in dialog
             // <SignInDialog />
-            <AuthDialog />
+            <AuthDialog buttonIcon={<FaChevronRight />} />
           )}
         </div>
       </form>

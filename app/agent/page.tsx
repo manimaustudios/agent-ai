@@ -20,6 +20,7 @@ import { getAllChats } from "@/lib/actions/chats";
 import { UserProfileDropdown } from "@/components/UserProfileDropdown";
 import { AuthDialog } from "@/components/AuthDialog";
 import { Button } from "@/components/ui/button";
+import { SignUpDialog } from "@/components/SignUpDialog";
 
 export async function metadata(): Promise<Metadata> {
   // Logto auth
@@ -83,6 +84,7 @@ async function Page() {
 
   const { msgAmountLimit, hoursToWait, msgAmountLimitMonthly } =
     await getSettings();
+
   const hasLimit = await hasLimitLeft(
     userId,
     userData,
@@ -114,11 +116,12 @@ async function Page() {
           <SignedIn>
             {/* <UserButton /> */}
             <SignOutButton>
-              <Button>Sign Out</Button>
+              <Button variant="outline">Sign Out</Button>
             </SignOutButton>
           </SignedIn>
           <SignedOut>
             <AuthDialog />
+            <SignUpDialog />
           </SignedOut>
           <ThemeToggle />
           {isAuthenticated && (

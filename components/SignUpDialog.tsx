@@ -1,6 +1,6 @@
 "use client";
 
-import { SignIn, useAuth } from "@clerk/nextjs";
+import { SignUp, useAuth } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,11 +13,11 @@ import {
 } from "./ui/dialog";
 import { useEffect, useState } from "react";
 
-type AuthDialogProps = {
+type SignUpDialogProps = {
   buttonIcon?: React.ReactNode;
 };
 
-export function AuthDialog({ buttonIcon }: AuthDialogProps) {
+export function SignUpDialog({ buttonIcon }: SignUpDialogProps) {
   const { isSignedIn, isLoaded } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -37,16 +37,16 @@ export function AuthDialog({ buttonIcon }: AuthDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>
-          <div>{buttonIcon ? buttonIcon : "Sign In"}</div>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          <div>{buttonIcon ? buttonIcon : "Sign Up"}</div>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-auto justify-center">
         <DialogHeader>
           <DialogTitle className="mb-2 pt-4 text-center font-normal text-muted-foreground"></DialogTitle>
-          <SignIn
+          <SignUp
             routing="hash"
-            signUpUrl="/sign-up"
+            signInUrl="/sign-in"
             afterSignInUrl="/agent"
             afterSignUpUrl="/agent"
           />
