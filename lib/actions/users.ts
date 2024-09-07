@@ -105,7 +105,7 @@ export async function hasLimitLeft(
         msgAmount: 0,
       });
 
-      revalidatePath("/agent");
+      revalidatePath("/");
       return true;
     }
   }

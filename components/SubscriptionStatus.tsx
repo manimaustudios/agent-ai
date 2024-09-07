@@ -1,4 +1,4 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { getUserDocument } from "@/lib/actions/users";
 import PaymentButton from "./PaymentButton";
 import ProgressBar from "./ProgressBar";
 
@@ -6,19 +6,23 @@ type SubscriptionStatusProps = {
   userId: string | null;
   msgAmountLimit: number;
   status?: string;
-  msgAmount?: number;
 };
 
 async function SubscriptionStatus({
   userId,
   msgAmountLimit,
   status,
-  msgAmount,
 }: SubscriptionStatusProps) {
+  let userData;
+
+  if (userId) {
+    userData = await getUserDocument(userId);
+  }
+
   return (
     <div>
       {status !== "active" && (
-        <ProgressBar amount={msgAmount ?? 0} limit={msgAmountLimit} />
+        <ProgressBar amount={userData?.msgAmount ?? 0} limit={msgAmountLimit} />
       )}
       <div className="my-3 ml-1 pt-2 text-sm">
         Plan:{" "}
