@@ -37,7 +37,8 @@ export async function metadata(): Promise<Metadata> {
 
   if (userId && userEmail) {
     const user = await ensureUserDocumentExists(userId, userEmail);
-    const chats = await getAllChats();
+    // const chatList = await getAllChats();
+    const { chats } = await getAllChats();
 
     const currentChat = user?.currentChatId
       ? chats.find((chat) => chat.chatId === user.currentChatId)
@@ -96,7 +97,8 @@ async function Page() {
 
   const hasPremium = await hasPremiumPlan(userId, userData);
 
-  const chatList = await getAllChats();
+  // const chatList = await getAllChats();
+  const { chats } = await getAllChats();
 
   const isMonthlyLimitReached =
     (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
@@ -145,7 +147,8 @@ async function Page() {
         isMonthlyLimitReached={isMonthlyLimitReached}
         monthlyLimit={msgAmountLimitMonthly ?? 0}
         price={price ?? 0}
-        chatList={chatList}
+        // chatList={chatList}
+        chatList={chats}
       />
       {!isAuthenticated && <DisclaimerDialog />}
     </>
