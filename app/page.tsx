@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import CallToActionButton from "@/components/CallToActionButton";
 
 // export const runtime = "edge";
+export const runtime = "nodejs";
 
 export default async function Home() {
   // const chatList = await getAllChats();
