@@ -23,62 +23,50 @@ import { SignUpDialog } from "@/components/SignUpDialog";
 
 export const runtime = "edge";
 
-// export async function metadata(): Promise<Metadata> {
-//   // Logto auth
-//   // const { userId, userEmail } = await auth();
+export async function metadata(): Promise<Metadata> {
+  // Logto auth
+  // const { userId, userEmail } = await auth();
 
-//   const { userId }: { userId: string | null } = auth();
-//   const user = await currentUser();
-//   const userEmail = user?.primaryEmailAddress?.emailAddress;
+  const { userId }: { userId: string | null } = auth();
+  const user = await currentUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
 
-//   let metaTitle = "Online Therapist Chat";
-//   let metaDescription =
-//     "Explore our unique AI therapy chatbots, each designed to offer personalized mental health support. From cognitive-behavioral therapy to mindfulness coaching, our AI therapists provide accessible, confidential, and effective solutions for stress, anxiety, depression, and more. Get tailored therapy anytime, anywhere.";
+  let metaTitle = "Online Therapist Chat";
+  let metaDescription =
+    "Explore our unique AI therapy chatbots, each designed to offer personalized mental health support. From cognitive-behavioral therapy to mindfulness coaching, our AI therapists provide accessible, confidential, and effective solutions for stress, anxiety, depression, and more. Get tailored therapy anytime, anywhere.";
 
-//   if (userId && userEmail) {
-//     const user = await ensureUserDocumentExists(userId, userEmail);
-//     // const chatList = await getAllChats();
-//     const { chats } = await getAllChats();
+  if (userId && userEmail) {
+    const user = await ensureUserDocumentExists(userId, userEmail);
+    // const chatList = await getAllChats();
+    const { chats } = await getAllChats();
 
-//     const currentChat = user?.currentChatId
-//       ? chats.find((chat) => chat.chatId === user.currentChatId)
-//       : null;
+    const currentChat = user?.currentChatId
+      ? chats.find((chat) => chat.chatId === user.currentChatId)
+      : null;
 
-//     if (currentChat?.seoTitle) {
-//       metaTitle = currentChat.seoTitle;
-//     }
-//     if (currentChat?.seoDescription) {
-//       metaDescription = currentChat.seoDescription;
-//     }
-//   }
+    if (currentChat?.seoTitle) {
+      metaTitle = currentChat.seoTitle;
+    }
+    if (currentChat?.seoDescription) {
+      metaDescription = currentChat.seoDescription;
+    }
+  }
 
-//   return {
-//     title: metaTitle,
-//     description: metaDescription,
-//   };
-// }
+  return {
+    title: metaTitle,
+    description: metaDescription,
+  };
+}
 
 async function Page() {
   // Logto auth
   // const { userId, userEmail, isAuthenticated } = await auth();
 
-  let userId = null;
-  try {
-    // const { userId }: { userId: string | null } = auth();
-    userId = auth();
-  } catch (error) {
-    return <div>{JSON.stringify(error)}</div>;
-  }
-
-  return <div>{JSON.stringify(userId)}</div>;
+  const { userId }: { userId: string | null } = auth();
 
   const user = await currentUser();
 
-  if (user) {
-    return <div>{JSON.stringify(user)}</div>;
-  }
-
-  const userEmail = (user as any)?.primaryEmailAddress?.emailAddress;
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
 
   // To keep based on logto logic work
   const isAuthenticated = !!userId;

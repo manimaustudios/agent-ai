@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -5,9 +7,7 @@ import { getAllChats } from "@/lib/actions/chats";
 import Navbar from "@/components/Navbar";
 import CallToActionButton from "@/components/CallToActionButton";
 
-export const runtime = "edge";
-
-const testEnv = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL;
+// export const runtime = "edge";
 
 export default async function Home() {
   // const chatList = await getAllChats();
@@ -24,7 +24,6 @@ export default async function Home() {
               <span className="relative text-white">Chatbot</span>
             </span>
           </h1>
-          <p>{testEnv ?? "NOENV HERE"}</p>
           <p className="text-lg">
             Your mental helath matters. Get personalised support from our AI
             therapist.
