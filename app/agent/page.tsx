@@ -104,6 +104,15 @@ async function Page() {
     (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
 
   return (
+    <div>
+      <p>USER ID: {userId && userId}</p>
+      <p>USER: {user && JSON.stringify(user)}</p>
+      <p>USER DATA: {userData && JSON.stringify(userData)}</p>
+      <p>MSG AMOUNT: {msgAmountLimit && msgAmountLimit} </p>
+    </div>
+  );
+
+  return (
     <>
       <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
         {isAuthenticated && (

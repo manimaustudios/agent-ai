@@ -16,7 +16,21 @@ function CallToActionButton() {
       const chatList = await getAllChats();
       return chatList;
     };
-    console.log("CHATS: ", getData());
+    getData().then((result) => {
+      console.log("ALL CHATS: ", result);
+    });
+  } catch (error) {
+    console.log("Error fetching chats:", error);
+  }
+
+  try {
+    const settings = async () => {
+      const { chats } = await getAllChats();
+      return chats;
+    };
+    settings().then((result) => {
+      console.log("SETTINGS: ", result);
+    });
   } catch (error) {
     console.log("Error fetching chats:", error);
   }
