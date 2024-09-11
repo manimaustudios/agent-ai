@@ -14,7 +14,13 @@ interface Chat {
   welcomeMsg: string;
 }
 
-export async function getAllChats(): Promise<Chat[]> {
+type ChatsWithError = {
+  chats: Chat[];
+  error: any;
+};
+
+// export async function getAllChats(): Promise<Chat[]> {
+export async function getAllChats(): Promise<ChatsWithError> {
   const chatsCollectionRef = collection(db, "chats");
   const chats: Chat[] = [];
 
@@ -30,7 +36,15 @@ export async function getAllChats(): Promise<Chat[]> {
     });
   } catch (error) {
     console.log("Error fetching chats:", error);
+    return {
+      chats,
+      error: error,
+    };
   }
 
-  return chats;
+  // return chats;
+  return {
+    chats,
+    error: null,
+  };
 }
