@@ -11,9 +11,33 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Free Online AI Therapist Chatbot | Mental Health & Self-Help Support",
+  title: "Free Online AI Therapist Chatbot | Mental Health Support`",
   description:
-    "Experience free therapy online with our AI therapist chatbot, designed to support your mental well-being and self-help journey. Whether you're seeking guidance for mental health, or looking for a virtual therapist, our platform offers personalized support to help you manage stress, anxiety, and emotional challenges. Prioritize your mental health with convenient and confidential conversations, anytime, anywhere.",
+    "Free therapy online with our AI therapist chatbot, designed to support your mental well-being and self-help journey. You're guidance for mental health.",
+  openGraph: {
+    title: "Free Online AI Therapist Chatbot",
+    description:
+      "Experience free therapy online with our AI therapist chatbot, designed to support your mental well-being.",
+    url: "https://www.aitherapistfree.com",
+    siteName: "AITherapistFree",
+    images: [
+      {
+        url: "https://www.aitherapistfree.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "AI Therapist Free",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+};
+
+const jsonLd = {
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  name: "AITherapistFree",
+  url: "https://www.aitherapistfree.com",
 };
 
 export default function RootLayout({
@@ -38,6 +62,10 @@ export default function RootLayout({
                 },
               }}
             >
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+              />
               {children}
             </ClerkProvider>
           </ThemeProvider>
