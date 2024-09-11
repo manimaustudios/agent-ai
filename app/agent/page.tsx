@@ -112,56 +112,56 @@ async function Page() {
     </div>
   );
 
-  return (
-    <>
-      <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
-        {isAuthenticated && (
-          <SubscriptionStatus
-            userId={userId}
-            msgAmountLimit={msgAmountLimit}
-            status={userData?.status ?? ""}
-          />
-        )}
-        <div className="flex items-center gap-2">
-          {/* Logto auth */}
-          {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
-          <SignedIn>
-            {/* <UserButton /> */}
-            <SignOutButton>
-              <Button variant="outline">Sign Out</Button>
-            </SignOutButton>
-          </SignedIn>
-          <SignedOut>
-            <AuthDialog />
-            <SignUpDialog />
-          </SignedOut>
-          <ThemeToggle />
-          {isAuthenticated && (
-            <UserProfileDropdown
-              userId={userId}
-              status={userData?.status}
-              userEmail={userEmail ?? ""}
-            />
-          )}
-        </div>
-      </Sidebar>
-      <Chat
-        welcomeMessage={welcomeMessage}
-        isAuthenticated={isAuthenticated ?? false}
-        hasLimit={hasLimit ?? false}
-        hasPremium={hasPremium}
-        userId={userId}
-        messageLimit={msgAmountLimit ?? 0}
-        hoursToWait={hoursToWait ?? 0}
-        isMonthlyLimitReached={isMonthlyLimitReached}
-        monthlyLimit={msgAmountLimitMonthly ?? 0}
-        price={price ?? 0}
-        // chatList={chatList}
-        chatList={chats}
-      />
-      {!isAuthenticated && <DisclaimerDialog />}
-    </>
-  );
+  // return (
+  //   <>
+  //     <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
+  //       {isAuthenticated && (
+  //         <SubscriptionStatus
+  //           userId={userId}
+  //           msgAmountLimit={msgAmountLimit}
+  //           status={userData?.status ?? ""}
+  //         />
+  //       )}
+  //       <div className="flex items-center gap-2">
+  //         {/* Logto auth */}
+  //         {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
+  //         <SignedIn>
+  //           {/* <UserButton /> */}
+  //           <SignOutButton>
+  //             <Button variant="outline">Sign Out</Button>
+  //           </SignOutButton>
+  //         </SignedIn>
+  //         <SignedOut>
+  //           <AuthDialog />
+  //           <SignUpDialog />
+  //         </SignedOut>
+  //         <ThemeToggle />
+  //         {isAuthenticated && (
+  //           <UserProfileDropdown
+  //             userId={userId}
+  //             status={userData?.status}
+  //             userEmail={userEmail ?? ""}
+  //           />
+  //         )}
+  //       </div>
+  //     </Sidebar>
+  //     <Chat
+  //       welcomeMessage={welcomeMessage}
+  //       isAuthenticated={isAuthenticated ?? false}
+  //       hasLimit={hasLimit ?? false}
+  //       hasPremium={hasPremium}
+  //       userId={userId}
+  //       messageLimit={msgAmountLimit ?? 0}
+  //       hoursToWait={hoursToWait ?? 0}
+  //       isMonthlyLimitReached={isMonthlyLimitReached}
+  //       monthlyLimit={msgAmountLimitMonthly ?? 0}
+  //       price={price ?? 0}
+  //       // chatList={chatList}
+  //       chatList={chats}
+  //     />
+  //     {!isAuthenticated && <DisclaimerDialog />}
+  //   </>
+  // );
 }
 
 export default Page;
