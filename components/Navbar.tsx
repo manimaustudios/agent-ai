@@ -1,4 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { useState } from "react";
+import { HiMenuAlt4, HiX } from "react-icons/hi";
 
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -17,9 +23,9 @@ const navLinks = [
   },
 ];
 
-import Image from "next/image";
-
 function Navbar() {
+  const [toggle, setToggle] = useState(false);
+
   return (
     <div className="mx-auto flex w-full max-w-screen-lg justify-between pt-2">
       <Link href="/" className="flex items-center justify-center gap-3">
@@ -30,18 +36,61 @@ function Navbar() {
           AITherapistFree
         </span>
       </Link>
-      <div className="flex items-center justify-center">
-        {navLinks.map((link, i) => (
-          <Link
-            key={`navLink-${i}`}
-            href={link.href}
-            className="mr-4 text-sm text-muted-foreground hover:text-primary hover:underline"
-          >
-            {link.name}
-          </Link>
-        ))}
-        <ThemeToggle />
+      <div>
+        <div className="hidden items-center justify-center md:flex">
+          {navLinks.map((link, i) => (
+            <Link
+              key={`navLink-${i}`}
+              href={link.href}
+              className="mr-4 text-sm text-muted-foreground hover:text-primary hover:underline"
+            >
+              {link.name}
+            </Link>
+          ))}
+          <ThemeToggle />
+        </div>
+        <button
+          type="button"
+          className="z-20 inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 md:hidden"
+          aria-controls="navbar-default"
+          aria-expanded={toggle ? "true" : "false"}
+          onClick={() => setToggle(!toggle)}
+        >
+          <span className="sr-only">Open main menu</span>
+          {toggle ? (
+            <HiX className="h-5 w-5" />
+          ) : (
+            <HiMenuAlt4 className="h-5 w-5" />
+          )}
+        </button>
       </div>
+
+      <AnimatePresence>
+        {toggle && (
+          <motion.div
+            key="menu"
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -100 }}
+            transition={{ duration: 0.5 }}
+            className="fixed left-0 top-16 z-10 w-full bg-gray-900 md:hidden"
+            id="navbar-default"
+          >
+            <ul className="flex flex-col rounded-lg bg-gray-800 p-4 font-medium">
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="block rounded px-3 py-2 text-slate-100 transition-all delay-75 ease-in-out hover:bg-gray-700 hover:text-slate-100 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
