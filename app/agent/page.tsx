@@ -62,11 +62,15 @@ async function Page() {
   // Logto auth
   // const { userId, userEmail, isAuthenticated } = await auth();
 
-  const { userId }: { userId: string | null } = auth();
-
-  if (userId) {
-    return <div>{userId}</div>;
+  let userId = null;
+  try {
+    // const { userId }: { userId: string | null } = auth();
+    userId = auth();
+  } catch (error) {
+    return <div>{JSON.stringify(error)}</div>;
   }
+
+  return <div>{userId}</div>;
 
   const user = await currentUser();
 
@@ -74,7 +78,7 @@ async function Page() {
     return <div>{JSON.stringify(user)}</div>;
   }
 
-  const userEmail = user?.primaryEmailAddress?.emailAddress;
+  const userEmail = (user as any)?.primaryEmailAddress?.emailAddress;
 
   // To keep based on logto logic work
   const isAuthenticated = !!userId;
