@@ -70,7 +70,7 @@ async function Page() {
     return <div>{JSON.stringify(error)}</div>;
   }
 
-  return <div>{userId}</div>;
+  return <div>{JSON.stringify(userId)}</div>;
 
   const user = await currentUser();
 
