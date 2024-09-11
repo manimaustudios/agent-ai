@@ -7,7 +7,7 @@ import { FaRegMessage } from "react-icons/fa6";
 import { Button } from "./ui/button";
 import LoadingSpinner from "./LoadingSpinner";
 
-function CallToAcrionButton() {
+function CallToActionButton() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -28,4 +28,4 @@ function CallToAcrionButton() {
   );
 }
 
-export default CallToAcrionButton;
+export default CallToActionButton;
