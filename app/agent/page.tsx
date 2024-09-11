@@ -7,7 +7,6 @@ import Chat from "@/components/Chat";
 // import { auth } from "@/lib/logto/auth";
 import {
   ensureUserDocumentExists,
-  getUserDocument,
   hasLimitLeft,
   hasPremiumPlan,
 } from "@/lib/actions/users";
@@ -21,6 +20,8 @@ import { UserProfileDropdown } from "@/components/UserProfileDropdown";
 import { AuthDialog } from "@/components/AuthDialog";
 import { Button } from "@/components/ui/button";
 import { SignUpDialog } from "@/components/SignUpDialog";
+
+export const runtime = "edge";
 
 export async function metadata(): Promise<Metadata> {
   // Logto auth

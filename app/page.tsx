@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { getAllChats } from "@/lib/actions/chats";
 import Navbar from "@/components/Navbar";
-import CallToAcrionButton from "@/components/CallToAcrionButton";
+import CallToActionButton from "@/components/CallToActionButton";
+
+export const runtime = "edge";
 
 export default async function Home() {
   const chatList = await getAllChats();
@@ -13,8 +15,8 @@ export default async function Home() {
       <main className="relative mx-auto flex min-h-screen max-w-screen-lg flex-col items-center justify-start px-4 text-center">
         <Navbar />
         <div className="my-auto space-y-4">
-          <h1 className="text-5xl font-semibold leading-tight">
-            AI Therapist{" "}
+          <h1 className="text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
+            Free Online AI Therapist{" "}
             <span className="relative ml-2 mt-4 inline-block px-2 py-1 before:absolute before:-inset-1 before:block before:-skew-y-2 before:rounded-xl before:bg-primary">
               <span className="relative text-white">Chatbot</span>
             </span>
@@ -24,7 +26,7 @@ export default async function Home() {
             therapist.
           </p>
           <p className="text-sm text-muted-foreground">24 / 7 For FREE</p>
-          <CallToAcrionButton />
+          <CallToActionButton />
           <p className="">Get Started With Your AI Therapist</p>
           <div className="mx-auto flex w-full max-w-screen-sm flex-wrap justify-center gap-10 pt-6">
             {chatList.map((chat, i) => (

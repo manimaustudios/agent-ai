@@ -1,5 +1,7 @@
 import Navbar from "@/components/Navbar";
 
+export const runtime = "edge";
+
 function Page() {
   return (
     <main className="relative mx-auto flex min-h-screen max-w-screen-lg flex-col items-start justify-start space-y-4 px-4 text-left">
