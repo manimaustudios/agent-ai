@@ -23,47 +23,57 @@ import { SignUpDialog } from "@/components/SignUpDialog";
 
 export const runtime = "edge";
 
-export async function metadata(): Promise<Metadata> {
-  // Logto auth
-  // const { userId, userEmail } = await auth();
+// export async function metadata(): Promise<Metadata> {
+//   // Logto auth
+//   // const { userId, userEmail } = await auth();
 
-  const { userId }: { userId: string | null } = auth();
-  const user = await currentUser();
-  const userEmail = user?.primaryEmailAddress?.emailAddress;
+//   const { userId }: { userId: string | null } = auth();
+//   const user = await currentUser();
+//   const userEmail = user?.primaryEmailAddress?.emailAddress;
 
-  let metaTitle = "Online Therapist Chat";
-  let metaDescription =
-    "Explore our unique AI therapy chatbots, each designed to offer personalized mental health support. From cognitive-behavioral therapy to mindfulness coaching, our AI therapists provide accessible, confidential, and effective solutions for stress, anxiety, depression, and more. Get tailored therapy anytime, anywhere.";
+//   let metaTitle = "Online Therapist Chat";
+//   let metaDescription =
+//     "Explore our unique AI therapy chatbots, each designed to offer personalized mental health support. From cognitive-behavioral therapy to mindfulness coaching, our AI therapists provide accessible, confidential, and effective solutions for stress, anxiety, depression, and more. Get tailored therapy anytime, anywhere.";
 
-  if (userId && userEmail) {
-    const user = await ensureUserDocumentExists(userId, userEmail);
-    // const chatList = await getAllChats();
-    const { chats } = await getAllChats();
+//   if (userId && userEmail) {
+//     const user = await ensureUserDocumentExists(userId, userEmail);
+//     // const chatList = await getAllChats();
+//     const { chats } = await getAllChats();
 
-    const currentChat = user?.currentChatId
-      ? chats.find((chat) => chat.chatId === user.currentChatId)
-      : null;
+//     const currentChat = user?.currentChatId
+//       ? chats.find((chat) => chat.chatId === user.currentChatId)
+//       : null;
 
-    if (currentChat?.seoTitle) {
-      metaTitle = currentChat.seoTitle;
-    }
-    if (currentChat?.seoDescription) {
-      metaDescription = currentChat.seoDescription;
-    }
-  }
+//     if (currentChat?.seoTitle) {
+//       metaTitle = currentChat.seoTitle;
+//     }
+//     if (currentChat?.seoDescription) {
+//       metaDescription = currentChat.seoDescription;
+//     }
+//   }
 
-  return {
-    title: metaTitle,
-    description: metaDescription,
-  };
-}
+//   return {
+//     title: metaTitle,
+//     description: metaDescription,
+//   };
+// }
 
 async function Page() {
   // Logto auth
   // const { userId, userEmail, isAuthenticated } = await auth();
 
   const { userId }: { userId: string | null } = auth();
+
+  if (userId) {
+    return <div>{userId}</div>;
+  }
+
   const user = await currentUser();
+
+  if (user) {
+    return <div>{JSON.stringify(user)}</div>;
+  }
+
   const userEmail = user?.primaryEmailAddress?.emailAddress;
 
   // To keep based on logto logic work
@@ -104,64 +114,55 @@ async function Page() {
     (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
 
   return (
-    <div>
-      <p>USER ID: {userId && userId}</p>
-      <p>USER: {user && JSON.stringify(user)}</p>
-      <p>USER DATA: {userData && JSON.stringify(userData)}</p>
-      <p>MSG AMOUNT: {msgAmountLimit && msgAmountLimit} </p>
-    </div>
+    <>
+      <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
+        {isAuthenticated && (
+          <SubscriptionStatus
+            userId={userId}
+            msgAmountLimit={msgAmountLimit}
+            status={userData?.status ?? ""}
+          />
+        )}
+        <div className="flex items-center gap-2">
+          {/* Logto auth */}
+          {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
+          <SignedIn>
+            {/* <UserButton /> */}
+            <SignOutButton>
+              <Button variant="outline">Sign Out</Button>
+            </SignOutButton>
+          </SignedIn>
+          <SignedOut>
+            <AuthDialog />
+            <SignUpDialog />
+          </SignedOut>
+          <ThemeToggle />
+          {isAuthenticated && (
+            <UserProfileDropdown
+              userId={userId}
+              status={userData?.status}
+              userEmail={userEmail ?? ""}
+            />
+          )}
+        </div>
+      </Sidebar>
+      <Chat
+        welcomeMessage={welcomeMessage}
+        isAuthenticated={isAuthenticated ?? false}
+        hasLimit={hasLimit ?? false}
+        hasPremium={hasPremium}
+        userId={userId}
+        messageLimit={msgAmountLimit ?? 0}
+        hoursToWait={hoursToWait ?? 0}
+        isMonthlyLimitReached={isMonthlyLimitReached}
+        monthlyLimit={msgAmountLimitMonthly ?? 0}
+        price={price ?? 0}
+        // chatList={chatList}
+        chatList={chats}
+      />
+      {!isAuthenticated && <DisclaimerDialog />}
+    </>
   );
-
-  // return (
-  //   <>
-  //     <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
-  //       {isAuthenticated && (
-  //         <SubscriptionStatus
-  //           userId={userId}
-  //           msgAmountLimit={msgAmountLimit}
-  //           status={userData?.status ?? ""}
-  //         />
-  //       )}
-  //       <div className="flex items-center gap-2">
-  //         {/* Logto auth */}
-  //         {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
-  //         <SignedIn>
-  //           {/* <UserButton /> */}
-  //           <SignOutButton>
-  //             <Button variant="outline">Sign Out</Button>
-  //           </SignOutButton>
-  //         </SignedIn>
-  //         <SignedOut>
-  //           <AuthDialog />
-  //           <SignUpDialog />
-  //         </SignedOut>
-  //         <ThemeToggle />
-  //         {isAuthenticated && (
-  //           <UserProfileDropdown
-  //             userId={userId}
-  //             status={userData?.status}
-  //             userEmail={userEmail ?? ""}
-  //           />
-  //         )}
-  //       </div>
-  //     </Sidebar>
-  //     <Chat
-  //       welcomeMessage={welcomeMessage}
-  //       isAuthenticated={isAuthenticated ?? false}
-  //       hasLimit={hasLimit ?? false}
-  //       hasPremium={hasPremium}
-  //       userId={userId}
-  //       messageLimit={msgAmountLimit ?? 0}
-  //       hoursToWait={hoursToWait ?? 0}
-  //       isMonthlyLimitReached={isMonthlyLimitReached}
-  //       monthlyLimit={msgAmountLimitMonthly ?? 0}
-  //       price={price ?? 0}
-  //       // chatList={chatList}
-  //       chatList={chats}
-  //     />
-  //     {!isAuthenticated && <DisclaimerDialog />}
-  //   </>
-  // );
 }
 
 export default Page;
