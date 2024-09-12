@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 function Page() {
   return (

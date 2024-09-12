@@ -5,7 +5,7 @@ import {
   handleSubscriptionEvent,
 } from "@/lib/actions/transaction";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",

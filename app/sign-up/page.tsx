@@ -1,6 +1,6 @@
 import { SignUp } from "@clerk/nextjs";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 const Page = () => {
   return (

@@ -2,7 +2,7 @@ import BackgroundGradient from "@/components/BackgroundGradient";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 const NotFound = () => {
   return (

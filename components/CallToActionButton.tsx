@@ -6,34 +6,9 @@ import { FaRegMessage } from "react-icons/fa6";
 
 import { Button } from "./ui/button";
 import LoadingSpinner from "./LoadingSpinner";
-import { getAllChats } from "@/lib/actions/chats";
 
 function CallToActionButton() {
   const [isLoading, setIsLoading] = useState(false);
-
-  try {
-    const getData = async () => {
-      const chatList = await getAllChats();
-      return chatList;
-    };
-    getData().then((result) => {
-      console.log("ALL CHATS: ", result);
-    });
-  } catch (error) {
-    console.log("Error fetching chats:", error);
-  }
-
-  try {
-    const settings = async () => {
-      const { chats } = await getAllChats();
-      return chats;
-    };
-    settings().then((result) => {
-      console.log("SETTINGS: ", result);
-    });
-  } catch (error) {
-    console.log("Error fetching chats:", error);
-  }
 
   useEffect(() => {
     setIsLoading(false);

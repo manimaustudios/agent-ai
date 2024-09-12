@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 function Page() {
   return (

@@ -21,7 +21,7 @@ import { AuthDialog } from "@/components/AuthDialog";
 import { Button } from "@/components/ui/button";
 import { SignUpDialog } from "@/components/SignUpDialog";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export async function metadata(): Promise<Metadata> {
   // Logto auth
