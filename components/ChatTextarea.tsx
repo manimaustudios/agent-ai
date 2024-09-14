@@ -119,7 +119,7 @@ export function ChatTextarea({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="relative w-full space-y-6 py-6"
+        className="relative w-full space-y-6 pt-6"
       >
         <FormField
           control={form.control}
@@ -137,6 +137,9 @@ export function ChatTextarea({
                 />
               </FormControl>
               <FormMessage />
+              <FormLabel className="block pb-2 text-center font-normal text-slate-400">
+                AI can make mistakes.
+              </FormLabel>
             </FormItem>
           )}
         />
