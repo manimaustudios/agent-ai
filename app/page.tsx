@@ -43,6 +43,7 @@ export default async function Home() {
                     priority
                     src={chat.imgUrl}
                     fill
+                    sizes="10rem"
                     className="absolute z-0 rounded-full object-cover"
                   />
                 </Link>

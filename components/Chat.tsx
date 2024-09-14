@@ -155,6 +155,7 @@ function Chat({
                       priority
                       src={chat.imgUrl}
                       fill
+                      sizes="12rem"
                       className="absoulute z-0 rounded-full object-cover opacity-80 hover:opacity-100"
                     />
                   </button>

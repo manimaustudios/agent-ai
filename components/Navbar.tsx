@@ -21,6 +21,10 @@ const navLinks = [
     name: "Disclaimer",
     href: "/disclaimer",
   },
+  {
+    name: "Contact",
+    href: "/contact",
+  },
 ];
 
 function Navbar() {
