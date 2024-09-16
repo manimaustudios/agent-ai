@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { PHProvider } from "@/lib/providers/PHProvider";
 import { ClerkProvider } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -40,6 +41,10 @@ const jsonLd = {
   url: "https://www.aitherapistfree.com",
 };
 
+const PostHogPageView = dynamic(() => import("../components/PostHogPageView"), {
+  ssr: false,
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -66,6 +71,7 @@ export default function RootLayout({
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
               />
+              <PostHogPageView />
               {children}
             </ClerkProvider>
           </ThemeProvider>
