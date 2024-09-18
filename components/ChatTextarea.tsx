@@ -138,7 +138,8 @@ export function ChatTextarea({
               </FormControl>
               <FormMessage />
               <FormLabel className="block pb-2 text-center font-normal text-slate-400">
-                AI can make mistakes.
+                You are chatting with AI Therapist. AI can make mistakes. This
+                is not a medical advice.
               </FormLabel>
             </FormItem>
           )}
