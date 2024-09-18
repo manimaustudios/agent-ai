@@ -37,7 +37,6 @@ export async function metadata(): Promise<Metadata> {
 
   if (userId && userEmail) {
     const user = await ensureUserDocumentExists(userId, userEmail);
-    // const chatList = await getAllChats();
     const { chats } = await getAllChats();
 
     const currentChat = user?.currentChatId
@@ -113,6 +112,7 @@ async function Page() {
             userId={userId}
             msgAmountLimit={msgAmountLimit}
             status={userData?.status ?? ""}
+            hasPremium={hasPremium}
           />
         )}
         <div className="flex items-center gap-2">
@@ -134,6 +134,7 @@ async function Page() {
               userId={userId}
               status={userData?.status}
               userEmail={userEmail ?? ""}
+              hasPremium={hasPremium}
             />
           )}
         </div>
