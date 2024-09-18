@@ -17,12 +17,14 @@ type UserProfileDropdownProps = {
   userId: string;
   status?: string;
   userEmail?: string;
+  hasPremium: boolean;
 };
 
 export function UserProfileDropdown({
   userId,
   status,
   userEmail,
+  hasPremium,
 }: UserProfileDropdownProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,7 +64,7 @@ export function UserProfileDropdown({
         <div className="text-sm">
           Plan:{" "}
           <span className="ml-1 rounded-md bg-slate-400 px-1 font-semibold text-primary">
-            {status === "active" ? "Premium" : "Free"}
+            {hasPremium ? "Premium" : "Free"}
           </span>
         </div>
 
@@ -76,6 +78,8 @@ export function UserProfileDropdown({
             </Button>
             {isLoading && <LoadingSpinner className="size-4 text-primary" />}
           </div>
+        ) : hasPremium ? (
+          <p className="text-xs">*Your subscription is cancelled</p>
         ) : (
           <PaymentButton userId={userId} />
         )}

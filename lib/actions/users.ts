@@ -189,7 +189,7 @@ export async function hasPremiumPlan(
     }
 
     const now = new Date();
-    const billingDate = new Date(nextBillingDate.seconds * 1000);
+    const billingDate = new Date(nextBillingDate);
 
     // Next billing date is in the future, subscription is active
     if (billingDate > now) {

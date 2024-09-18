@@ -6,12 +6,14 @@ type SubscriptionStatusProps = {
   userId: string | null;
   msgAmountLimit: number;
   status?: string;
+  hasPremium: boolean;
 };
 
 async function SubscriptionStatus({
   userId,
   msgAmountLimit,
   status,
+  hasPremium,
 }: SubscriptionStatusProps) {
   let userData;
 
@@ -21,16 +23,16 @@ async function SubscriptionStatus({
 
   return (
     <div>
-      {status !== "active" && (
+      {!hasPremium && (
         <ProgressBar amount={userData?.msgAmount ?? 0} limit={msgAmountLimit} />
       )}
       <div className="my-3 ml-1 pt-2 text-sm">
         Plan:{" "}
         <span className="ml-1 rounded-md bg-slate-400 px-1 font-semibold text-primary">
-          {status === "active" ? "Premium" : "Free"}
+          {hasPremium ? "Premium" : "Free"}
         </span>
       </div>
-      {status !== "active" && <PaymentButton userId={userId} />}
+      {!hasPremium && <PaymentButton userId={userId} />}
     </div>
   );
 }

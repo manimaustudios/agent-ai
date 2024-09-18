@@ -6,10 +6,8 @@ import Navbar from "@/components/Navbar";
 import CallToActionButton from "@/components/CallToActionButton";
 
 // export const runtime = "edge";
-// export const runtime = "nodejs";
 
 export default async function Home() {
-  // const chatList = await getAllChats();
   const { chats } = await getAllChats();
 
   return (
@@ -31,7 +29,6 @@ export default async function Home() {
           <CallToActionButton />
           <p className="">Get Started With Your AI Therapist</p>
           <div className="mx-auto flex w-full max-w-screen-sm flex-wrap justify-center gap-10 pt-6">
-            {/* {chatList.map((chat, i) => ( */}
             {chats.map((chat, i) => (
               <div
                 key={`chatType-${i}`}
