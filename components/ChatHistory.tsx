@@ -5,6 +5,7 @@ import { FaTimes } from "react-icons/fa";
 
 import { useChat } from "@/lib/providers/ChatProvider";
 import { updateCurrentChatId } from "@/lib/actions/users";
+import { useSidebar } from "@/lib/providers/SidebarProvider";
 
 type ChatHistoryProps = {
   userId: string | null;
@@ -13,12 +14,14 @@ type ChatHistoryProps = {
 function ChatHistory({ userId }: ChatHistoryProps) {
   const { sessions, loadChatHistory, deleteChatHistory, currentSessionId } =
     useChat();
+  const { closeSidebarOnMobile } = useSidebar();
 
   const handleShowChatHistory = (
     chatType: string,
     sessionId: string,
     chatId: string,
   ) => {
+    closeSidebarOnMobile();
     loadChatHistory(chatType, sessionId);
     const updateChatId = async () => {
       await updateCurrentChatId(userId, chatId);

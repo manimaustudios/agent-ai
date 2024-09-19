@@ -33,6 +33,7 @@ import { updateMsgAmount } from "@/lib/actions/users";
 import PaymentButton from "./PaymentButton";
 import { getFormattedChatHistory } from "@/lib/utils";
 import { AuthDialog } from "./AuthDialog";
+import { useSidebar } from "@/lib/providers/SidebarProvider";
 
 type ChatTextareaProps = {
   setChatHistory: any;
@@ -119,16 +120,13 @@ export function ChatTextarea({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="relative w-full space-y-6 pt-6"
+        className="relative mb-2 mt-4 w-full space-y-6"
       >
         <FormField
           control={form.control}
           name="content"
           render={({ field }) => (
             <FormItem className="">
-              <FormLabel className="block pb-2 text-center font-normal text-slate-400">
-                Type your message.
-              </FormLabel>
               <FormControl>
                 <Textarea
                   className="h-24 resize-none pr-16"
@@ -137,10 +135,6 @@ export function ChatTextarea({
                 />
               </FormControl>
               <FormMessage />
-              <FormLabel className="block pb-2 text-center font-normal text-slate-400">
-                You are chatting with AI Therapist. AI can make mistakes. This
-                is not a medical advice.
-              </FormLabel>
             </FormItem>
           )}
         />
@@ -163,6 +157,10 @@ export function ChatTextarea({
           )}
         </div>
       </form>
+      <p className="block pb-2 text-center text-xs font-normal text-slate-400">
+        You are chatting with AI Therapist. AI can make mistakes. This is not a
+        medical advice.
+      </p>
     </Form>
   );
 }
@@ -188,10 +186,16 @@ function SubmitFormButton({
   monthlyLimit,
   price,
 }: SubmitFormButtonProps) {
+  const { closeSidebarOnMobile } = useSidebar();
   return (
     <>
       {canSendMessage ? (
-        <Button type="submit" size="icon" disabled={isLoading}>
+        <Button
+          type="submit"
+          size="icon"
+          disabled={isLoading}
+          onClick={() => closeSidebarOnMobile()}
+        >
           {isLoading ? (
             <LoadingSpinner className="text-white" />
           ) : (
@@ -240,7 +244,7 @@ function SubmitFormButton({
                 )}
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter className="mx-auto pt-3">
+            <DialogFooter className="mx-auto flex-row gap-2 pt-3">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
                   Cancel

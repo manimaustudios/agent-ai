@@ -12,12 +12,15 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { useEffect, useState } from "react";
+import { ClassNameValue } from "tailwind-merge";
+import { cn } from "@/lib/utils";
 
 type SignUpDialogProps = {
   buttonIcon?: React.ReactNode;
+  className?: ClassNameValue;
 };
 
-export function SignUpDialog({ buttonIcon }: SignUpDialogProps) {
+export function SignUpDialog({ buttonIcon, className }: SignUpDialogProps) {
   const { isSignedIn, isLoaded } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -37,7 +40,11 @@ export function SignUpDialog({ buttonIcon }: SignUpDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setOpen(true)}>
+        <Button
+          variant="outline"
+          onClick={() => setOpen(true)}
+          className={cn(className)}
+        >
           <div>{buttonIcon ? buttonIcon : "Sign Up"}</div>
         </Button>
       </DialogTrigger>

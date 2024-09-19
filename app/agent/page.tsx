@@ -115,7 +115,7 @@ async function Page() {
             hasPremium={hasPremium}
           />
         )}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2">
           {/* Logto auth */}
           {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
           <SignedIn>
@@ -124,19 +124,23 @@ async function Page() {
               <Button variant="outline">Sign Out</Button>
             </SignOutButton>
           </SignedIn>
-          <SignedOut>
-            <AuthDialog />
-            <SignUpDialog />
-          </SignedOut>
-          <ThemeToggle />
-          {isAuthenticated && (
-            <UserProfileDropdown
-              userId={userId}
-              status={userData?.status}
-              userEmail={userEmail ?? ""}
-              hasPremium={hasPremium}
-            />
-          )}
+          <div className="flex items-center justify-center gap-2">
+            <SignedOut>
+              <AuthDialog />
+              <SignUpDialog />
+            </SignedOut>
+          </div>
+          <div className="items flex justify-center gap-2">
+            <ThemeToggle />
+            {isAuthenticated && (
+              <UserProfileDropdown
+                userId={userId}
+                status={userData?.status}
+                userEmail={userEmail ?? ""}
+                hasPremium={hasPremium}
+              />
+            )}
+          </div>
         </div>
       </Sidebar>
       <Chat

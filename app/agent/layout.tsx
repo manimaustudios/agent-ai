@@ -7,7 +7,9 @@ export default function AgentLayout({
 }) {
   return (
     <ChatProvider>
-      <div className="flex h-screen bg-background">{children}</div>
+      <div className="fixed bottom-0 left-0 top-0 flex h-screen bg-background md:static">
+        {children}
+      </div>
     </ChatProvider>
   );
 }

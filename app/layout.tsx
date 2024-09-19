@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { PHProvider } from "@/lib/providers/PHProvider";
-import { ClerkProvider } from "@clerk/nextjs";
-import dynamic from "next/dynamic";
+import { SidebarProvider } from "@/lib/providers/SidebarProvider";
+import "./globals.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -72,7 +74,7 @@ export default function RootLayout({
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
               />
               <PostHogPageView />
-              {children}
+              <SidebarProvider>{children}</SidebarProvider>
             </ClerkProvider>
           </ThemeProvider>
         </body>

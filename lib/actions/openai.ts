@@ -3,6 +3,7 @@
 import OpenAI from "openai";
 
 const apiKey = process.env.OPENAI_SECRET;
+const chatModel = process.env.NEXT_PUBLIC_OPENAI_MODEL;
 
 if (!apiKey) throw new Error("apiKey is missing");
 
@@ -21,7 +22,8 @@ export async function getAiResponse(
     const response = await openai.chat.completions.create({
       // @ts-ignore
       messages: formattedChatHistory,
-      model: "gpt-4o-mini",
+      // model: "gpt-4o-mini",
+      model: chatModel as string,
     });
 
     const answer = response.choices[0].message.content;
