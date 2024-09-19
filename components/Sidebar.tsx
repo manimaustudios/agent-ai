@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import ChatHistory from "./ChatHistory";
 import NewChatButton from "./NewChatButton";
+import { useSidebar } from "@/lib/providers/SidebarProvider";
 
 type SidebarProps = {
   isAuthenticated: boolean;
@@ -14,13 +14,13 @@ type SidebarProps = {
 };
 
 function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
   return (
     <>
       <div
-        className={`${isOpen ? "flex" : "hidden"} h-screen w-60 flex-col bg-secondary/50 p-2`}
+        className={`${isSidebarOpen ? "flex" : "hidden"} fixed bottom-0 left-0 top-0 z-20 w-1/2 flex-col bg-secondary/50 p-2 md:relative md:w-72`}
       >
-        <div className="space-y-4">
+        <div className="relative space-y-4">
           <div className="flex items-center justify-start gap-2">
             <div>
               <Image src="/logo.png" alt="logo" width={40} height={40} />
@@ -29,24 +29,30 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
           </div>
           <div className="flex items-center justify-between">
             <NewChatButton />
-            <button
-              onClick={() => setIsOpen(false)}
-              className="-mr-2 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
+            {/* <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="z-30 -mr-2 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
             >
               <FaChevronLeft className="size-4" />
-            </button>
+            </button> */}
           </div>
 
           {isAuthenticated && <ChatHistory userId={userId} />}
         </div>
-        <div className="mt-auto space-y-2">
+        <div className="mt-auto space-y-2 pt-2 md:static">
           {/* server components */}
           {children}
         </div>
+        <button
+          onClick={() => setIsSidebarOpen(false)}
+          className="absolute bottom-4 right-0 z-20 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
+        >
+          <FaChevronLeft className="size-4" />
+        </button>
       </div>
       <button
-        onClick={() => setIsOpen(true)}
-        className={`${!isOpen ? "flex" : "hidden"} absolute left-0 top-3 size-6 items-center justify-center rounded-r-full border bg-background`}
+        onClick={() => setIsSidebarOpen(true)}
+        className={`${!isSidebarOpen ? "flex" : "hidden"} fixed left-0 top-4 z-20 size-6 items-center justify-center rounded-r-full border-y border-r bg-background`}
       >
         <FaChevronRight className="size-4" />
       </button>
