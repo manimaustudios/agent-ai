@@ -19,25 +19,25 @@ export const SidebarProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // useEffect(() => {
-  //   const checkWindowSize = () => {
-  //     if (window.innerWidth > 768) {
-  //       setIsSidebarOpen(true);
-  //     } else {
-  //       setIsSidebarOpen(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const checkWindowSize = () => {
+      if (window.innerWidth > 768) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
 
-  //   checkWindowSize();
+    checkWindowSize();
 
-  //   window.addEventListener('resize', checkWindowSize);
+    window.addEventListener("resize", checkWindowSize);
 
-  //   return () => {
-  //     window.removeEventListener('resize', checkWindowSize);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener("resize", checkWindowSize);
+    };
+  }, []);
 
   const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) {
