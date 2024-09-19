@@ -7,6 +7,7 @@ import { useState } from "react";
 import { HiMenuAlt4, HiX } from "react-icons/hi";
 
 import { ThemeToggle } from "./ThemeToggle";
+import { Button } from "./ui/button";
 
 const navLinks = [
   {
@@ -53,20 +54,24 @@ function Navbar() {
           ))}
           <ThemeToggle />
         </div>
-        <button
-          type="button"
-          className="z-20 inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 md:hidden"
-          aria-controls="navbar-default"
-          aria-expanded={toggle ? "true" : "false"}
-          onClick={() => setToggle(!toggle)}
-        >
-          <span className="sr-only">Open main menu</span>
-          {toggle ? (
-            <HiX className="h-5 w-5" />
-          ) : (
-            <HiMenuAlt4 className="h-5 w-5" />
-          )}
-        </button>
+        <div className="md:hidden">
+          <ThemeToggle />
+          <Button
+            variant="outline"
+            size="icon"
+            aria-controls="navbar-default"
+            aria-expanded={toggle ? "true" : "false"}
+            onClick={() => setToggle(!toggle)}
+            className="z-20 ml-2"
+          >
+            <span className="sr-only">Open main menu</span>
+            {toggle ? (
+              <HiX className="h-5 w-5" />
+            ) : (
+              <HiMenuAlt4 className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
       </div>
 
       <AnimatePresence>
