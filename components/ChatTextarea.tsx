@@ -129,7 +129,7 @@ export function ChatTextarea({
             <FormItem className="">
               <FormControl>
                 <Textarea
-                  className="h-24 resize-none pr-16"
+                  className="h-24 resize-none pr-16 text-base"
                   placeholder="Write your question here..."
                   {...field}
                 />
