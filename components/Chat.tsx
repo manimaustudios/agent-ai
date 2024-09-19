@@ -7,6 +7,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ChatTextarea } from "./ChatTextarea";
 import { useChat } from "@/lib/providers/ChatProvider";
 import { updateCurrentChatId } from "@/lib/actions/users";
+import { useSidebar } from "@/lib/providers/SidebarProvider";
 
 type ChatSettings = {
   name: string;
@@ -52,6 +53,8 @@ function Chat({
     sessions,
     currentChatType,
   } = useChat();
+  const { isSidebarOpen, setIsSidebarOpen, closeSidebarOnMobile } =
+    useSidebar();
 
   const currentSessionObject = sessions.find(
     (session) => session.sessionId === currentSessionId,
@@ -86,6 +89,7 @@ function Chat({
     chatName: string,
     pickedChatId: string,
   ) => {
+    closeSidebarOnMobile();
     const selectedChat = chatList.find((chat) => chat.chatId === pickedChatId);
 
     const welcomeText = {
@@ -103,7 +107,9 @@ function Chat({
 
   return (
     <>
-      <div className="mx-auto flex h-screen w-full max-w-screen-xl flex-col bg-background px-2">
+      <div
+        className={`fixed bottom-0 right-0 top-0 mx-auto flex ${isSidebarOpen ? "w-1/2" : "w-full"} z-10 flex-col bg-background px-2 md:static md:max-h-screen md:w-full md:max-w-screen-xl`}
+      >
         <div className="mb-3 flex items-center justify-center gap-3 py-3">
           <div>
             <Image src="/logo.png" alt="logo" width={40} height={40} />
@@ -137,15 +143,15 @@ function Chat({
           </ScrollArea>
         ) : (
           // Chats to pick from
-          <ScrollArea className="flex flex-1 justify-center overflow-auto md:px-6">
-            <div className="grid flex-1 gap-5 sm:grid-cols-2 md:grid-cols-3 md:gap-0 md:px-6">
+          <ScrollArea className="mb-3 flex flex-1 justify-center overflow-auto md:px-6">
+            <div className="grid flex-1 gap-5 pb-6 sm:grid-cols-2 md:grid-cols-4 md:gap-0 md:px-6">
               {chatList.map((chat, i) => (
                 <div
                   key={`chatType-${i}`}
                   className="flex flex-col items-center justify-center gap-3"
                 >
                   <button
-                    className="relative size-24 rounded-full focus:outline-none md:size-36"
+                    className="relative size-16 rounded-full transition-transform ease-in-out hover:scale-105 focus:outline-none md:size-24"
                     onClick={() =>
                       handleStartNewChat(chat.type, chat.name, chat.chatId)
                     }
@@ -156,10 +162,12 @@ function Chat({
                       src={chat.imgUrl}
                       fill
                       sizes="12rem"
-                      className="absoulute z-0 rounded-full object-cover opacity-80 hover:opacity-100"
+                      className="absoulute z-0 rounded-full object-cover"
                     />
                   </button>
-                  <p className="">{chat.name}</p>
+                  <p className="text-center text-xs text-muted-foreground md:text-sm">
+                    {chat.name}
+                  </p>
                 </div>
               ))}
             </div>
