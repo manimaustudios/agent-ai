@@ -120,7 +120,7 @@ export function ChatTextarea({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="relative mb-2 mt-4 w-full space-y-6"
+        className="relative mb-2 mt-4 w-full max-w-full space-y-6"
       >
         <FormField
           control={form.control}
@@ -138,7 +138,7 @@ export function ChatTextarea({
             </FormItem>
           )}
         />
-        <div className="absolute right-2 top-[44%] flex -translate-y-1/2 transform items-center gap-3">
+        <div className="absolute bottom-2 right-2 flex items-center gap-3">
           {isAuthenticated ? (
             <SubmitFormButton
               isLoading={isLoading}

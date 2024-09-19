@@ -41,9 +41,9 @@ function ChatHistory({ userId }: ChatHistoryProps) {
   return (
     <>
       {sessions.length > 0 && (
-        <div className="max-h-64 rounded-lg border p-2">
+        <div className="max-h-64 rounded-lg border border-secondary-foreground/10 p-2">
           <p className="text-sm text-muted-foreground">Previous Chats:</p>
-          <div className="mt-1 border-t" />
+          <div className="mt-1 border-t border-secondary-foreground/10" />
 
           <ScrollArea className="mt-2 h-44 space-y-2 overflow-auto pb-1 pr-2 text-sm text-muted-foreground">
             {sessions.map((session, i) => (

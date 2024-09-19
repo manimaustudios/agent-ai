@@ -72,6 +72,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+input,
+textarea {
+  font-size: 12px;
+  /* Prevent zooming */
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
 }
 
 ::-webkit-scrollbar {

@@ -108,7 +108,8 @@ function Chat({
   return (
     <>
       <div
-        className={`fixed bottom-0 right-0 top-0 mx-auto flex ${isSidebarOpen ? "w-1/2" : "w-full"} z-10 flex-col bg-background px-2 md:static md:max-h-screen md:w-full md:max-w-screen-xl`}
+        onClick={() => closeSidebarOnMobile()}
+        className={`fixed bottom-0 right-0 top-0 mx-auto flex ${isSidebarOpen ? "w-full" : "w-full"} z-10 max-w-full flex-col bg-background px-2 md:static md:max-h-screen md:w-full md:max-w-screen-xl`}
       >
         <div className="mb-3 flex items-center justify-center gap-3 py-3">
           <div>
@@ -119,7 +120,7 @@ function Chat({
 
         {chatHistory?.length > 0 ? (
           // Chat history interface
-          <ScrollArea className="flex-1 overflow-auto md:px-6">
+          <ScrollArea className="flex-1 overflow-auto pr-2 md:px-6">
             <div
               ref={scrollAreaRef}
               className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line"
@@ -148,7 +149,7 @@ function Chat({
               {chatList.map((chat, i) => (
                 <div
                   key={`chatType-${i}`}
-                  className="flex flex-col items-center justify-center gap-3"
+                  className="flex flex-col items-center justify-start gap-3"
                 >
                   <button
                     className="relative size-16 rounded-full transition-transform ease-in-out hover:scale-105 focus:outline-none md:size-24"

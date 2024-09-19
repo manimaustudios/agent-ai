@@ -18,7 +18,7 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
   return (
     <>
       <div
-        className={`${isSidebarOpen ? "flex" : "hidden"} fixed bottom-0 left-0 top-0 z-20 w-1/2 flex-col bg-secondary/50 p-2 md:relative md:w-72`}
+        className={`${isSidebarOpen ? "flex" : "hidden"} fixed bottom-0 left-0 top-0 z-30 w-2/3 flex-col border-r-2 border-secondary-foreground/10 bg-background p-2 sm:w-1/2 md:relative md:w-72`}
       >
         <div className="relative space-y-4">
           <div className="flex items-center justify-start gap-2">
@@ -29,12 +29,12 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
           </div>
           <div className="flex items-center justify-between">
             <NewChatButton />
-            {/* <button
+            <button
               onClick={() => setIsSidebarOpen(false)}
               className="z-30 -mr-2 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
             >
               <FaChevronLeft className="size-4" />
-            </button> */}
+            </button>
           </div>
 
           {isAuthenticated && <ChatHistory userId={userId} />}
@@ -43,18 +43,18 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
           {/* server components */}
           {children}
         </div>
-        <button
+        {/* <button
           onClick={() => setIsSidebarOpen(false)}
-          className="absolute bottom-4 right-0 z-20 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
+          className="absolute right-0 top-4 z-20 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
         >
           <FaChevronLeft className="size-4" />
-        </button>
+        </button> */}
       </div>
       <button
         onClick={() => setIsSidebarOpen(true)}
-        className={`${!isSidebarOpen ? "flex" : "hidden"} fixed left-0 top-4 z-20 size-6 items-center justify-center rounded-r-full border-y border-r bg-background`}
+        className={`${!isSidebarOpen ? "flex" : "hidden"} fixed left-0 top-3 z-20 h-7 w-8 items-center justify-center rounded-r-full border-y border-r bg-background`}
       >
-        <FaChevronRight className="size-4" />
+        <FaChevronRight className="size-5" />
       </button>
     </>
   );
