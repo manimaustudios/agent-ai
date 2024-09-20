@@ -120,7 +120,7 @@ function Chat({
 
         {chatHistory?.length > 0 ? (
           // Chat history interface
-          <ScrollArea className="flex-1 overflow-auto pr-2 md:px-6">
+          <ScrollArea className="flex-1 overflow-auto px-2 md:px-6">
             <div
               ref={scrollAreaRef}
               className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line"
@@ -145,11 +145,11 @@ function Chat({
         ) : (
           // Chats to pick from
           <ScrollArea className="mb-3 flex flex-1 justify-center overflow-auto md:px-6">
-            <div className="grid flex-1 gap-5 pb-6 sm:grid-cols-2 md:grid-cols-4 md:gap-0 md:px-6">
+            <div className="mx-auto flex w-full max-w-screen-md flex-wrap justify-center gap-2 sm:py-8 md:gap-6">
               {chatList.map((chat, i) => (
                 <div
                   key={`chatType-${i}`}
-                  className="flex flex-col items-center justify-start gap-3"
+                  className="flex w-28 flex-col items-center justify-start gap-2 md:w-36"
                 >
                   <button
                     className="relative size-16 rounded-full transition-transform ease-in-out hover:scale-105 focus:outline-none md:size-24"
