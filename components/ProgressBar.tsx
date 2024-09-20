@@ -20,9 +20,9 @@ function ProgressBar({ amount, limit }: ProgressBarProps) {
   return (
     <div>
       <Progress value={progress} className="h-2 w-[80%]" />
-      <div className="mt-1 text-xs text-slate-400">
+      <div className="mt-1 text-sm font-medium">
         <p>
-          Used: {amount}/{limit}
+          Used: {amount} / {limit}
         </p>
       </div>
     </div>
