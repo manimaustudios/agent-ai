@@ -98,7 +98,6 @@ async function Page() {
 
   const hasPremium = await hasPremiumPlan(userId, userData);
 
-  // const chatList = await getAllChats();
   const { chats } = await getAllChats();
 
   const isMonthlyLimitReached =
@@ -118,19 +117,13 @@ async function Page() {
         <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2">
           {/* Logto auth */}
           {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
-          <SignedIn>
-            {/* <UserButton /> */}
-            <SignOutButton>
-              <Button variant="outline">Sign Out</Button>
-            </SignOutButton>
-          </SignedIn>
-          <div className="flex items-center justify-center gap-2">
-            <SignedOut>
-              <AuthDialog />
-              <SignUpDialog />
-            </SignedOut>
-          </div>
           <div className="items flex justify-center gap-2">
+            <SignedIn>
+              {/* <UserButton /> */}
+              <SignOutButton>
+                <Button variant="outline">Sign Out</Button>
+              </SignOutButton>
+            </SignedIn>
             <ThemeToggle />
             {isAuthenticated && (
               <UserProfileDropdown
@@ -140,6 +133,12 @@ async function Page() {
                 hasPremium={hasPremium}
               />
             )}
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <SignedOut>
+              <AuthDialog />
+              <SignUpDialog />
+            </SignedOut>
           </div>
         </div>
       </Sidebar>
