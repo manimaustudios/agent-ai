@@ -149,9 +149,12 @@ export async function updateMsgAmount(
   const { msgAmountLimit } = await getSettings();
 
   const userDocRef = doc(db, "users", userId);
-  if (userData && userData.msgAmount < msgAmountLimit) {
+  if (userData && userData.msgAmount <= msgAmountLimit) {
     await updateDoc(userDocRef, {
-      msgAmount: hasPremium ? userData.msgAmount : userData.msgAmount + 1,
+      msgAmount:
+        hasPremium || userData.msgAmount === msgAmountLimit
+          ? userData.msgAmount
+          : userData.msgAmount + 1,
       msgAmountMonthly: userData.msgAmountMonthly + 1,
       firstMsgTime:
         userData.msgAmount === 0 ? Timestamp.now() : userData.firstMsgTime,

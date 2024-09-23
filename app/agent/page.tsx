@@ -98,6 +98,8 @@ async function Page() {
 
   const hasPremium = await hasPremiumPlan(userId, userData);
 
+  console.log("hasPremium", hasPremium);
+
   const { chats } = await getAllChats();
 
   const isMonthlyLimitReached =

@@ -76,7 +76,17 @@ export function ChatTextarea({
   price,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const canSendMessage = hasLimit;
+
+  let canSendMessage = true;
+
+  if (!hasPremium && !hasLimit) {
+    canSendMessage = false;
+  }
+  if (hasPremium && isMonthlyLimitReached) {
+    canSendMessage = false;
+  }
+
+  console.log("canSendMessage: ", canSendMessage);
 
   const form = useForm<z.infer<typeof ChatTextareaLimits>>({
     resolver: zodResolver(ChatTextareaLimits),
@@ -110,6 +120,8 @@ export function ChatTextarea({
     setChatHistory(updatedHistoryWithAnswer, chatType, sessionId);
 
     await resetFormValues();
+
+    console.log("BEFORE");
 
     await updateMsgAmount(userId, hasPremium);
 
@@ -149,6 +161,7 @@ export function ChatTextarea({
               isMonthlyLimitReached={isMonthlyLimitReached}
               monthlyLimit={monthlyLimit}
               price={price}
+              hasPremium={hasPremium}
             />
           ) : (
             // Logto sign in dialog
@@ -174,6 +187,7 @@ type SubmitFormButtonProps = {
   isMonthlyLimitReached: boolean;
   monthlyLimit: number;
   price: number;
+  hasPremium: boolean;
 };
 
 function SubmitFormButton({
@@ -185,6 +199,7 @@ function SubmitFormButton({
   isMonthlyLimitReached,
   monthlyLimit,
   price,
+  hasPremium,
 }: SubmitFormButtonProps) {
   const { closeSidebarOnMobile } = useSidebar();
   return (
