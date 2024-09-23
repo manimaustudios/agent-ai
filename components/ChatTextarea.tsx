@@ -86,8 +86,6 @@ export function ChatTextarea({
     canSendMessage = false;
   }
 
-  console.log("canSendMessage: ", canSendMessage);
-
   const form = useForm<z.infer<typeof ChatTextareaLimits>>({
     resolver: zodResolver(ChatTextareaLimits),
     defaultValues: {
@@ -121,8 +119,6 @@ export function ChatTextarea({
 
     await resetFormValues();
 
-    console.log("BEFORE");
-
     await updateMsgAmount(userId, hasPremium);
 
     setIsLoading(false);
@@ -150,7 +146,7 @@ export function ChatTextarea({
             </FormItem>
           )}
         />
-        <div className="absolute bottom-2 right-2 flex items-center gap-3">
+        <div className="absolute right-3 top-5 flex items-center gap-3">
           {isAuthenticated ? (
             <SubmitFormButton
               isLoading={isLoading}
