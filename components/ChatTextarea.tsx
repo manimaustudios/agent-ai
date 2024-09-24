@@ -124,6 +124,13 @@ export function ChatTextarea({
     setIsLoading(false);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      form.handleSubmit(onSubmit)();
+    }
+  };
+
   return (
     <Form {...form}>
       <form
@@ -140,6 +147,7 @@ export function ChatTextarea({
                   className="h-24 resize-none pr-16 text-base"
                   placeholder="Type your message"
                   {...field}
+                  onKeyDown={handleKeyDown}
                 />
               </FormControl>
               <FormMessage />
