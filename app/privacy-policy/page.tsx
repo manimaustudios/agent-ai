@@ -123,12 +123,20 @@ function Page() {
         <h3 className="text-base text-foreground">8. Contact Information</h3>
         <p>
           If you have any questions or concerns about this Privacy Policy,
-          please contact us at{" "}
-          <a
+          please contact us here:{" "}
+          {/* <a
             href="mailto:info@aitherapistfree.com"
             className="text-foreground hover:text-primary hover:underline"
           >
             info@aitherapistfree.com
+          </a> */}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScDAOGOXyWDaj3JNi21TDsqvoQRL493sdyC2aLpVdFv7gko3A/viewform"
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Contact Us
           </a>
           .
         </p>

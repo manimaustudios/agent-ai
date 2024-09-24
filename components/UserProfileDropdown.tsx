@@ -52,12 +52,14 @@ export function UserProfileDropdown({
         </div>
 
         <div>
-          <p className="text-xs">Support e-mail:</p>
+          <p className="text-xs">Help & Support:</p>
           <a
-            href="mailto:info@aitherapistfree.com"
-            className="text-sm text-muted-foreground hover:text-primary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScDAOGOXyWDaj3JNi21TDsqvoQRL493sdyC2aLpVdFv7gko3A/viewform"
+            className="text-sm font-medium text-muted-foreground hover:text-primary hover:underline"
           >
-            info@aitherapistfree.com
+            Contact Us
           </a>
         </div>
 

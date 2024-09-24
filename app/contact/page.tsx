@@ -15,12 +15,14 @@ function Page() {
         </p>
         <p>
           For any inquiries, suggestions, or support, you can contact us
-          directly via email at:{" "}
+          directly here:{" "}
           <a
-            href="mailto:info@aitherapistfree.com"
-            className="text-foreground hover:text-primary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScDAOGOXyWDaj3JNi21TDsqvoQRL493sdyC2aLpVdFv7gko3A/viewform"
+            className="text-sm font-medium text-primary hover:underline"
           >
-            info@aitherapistfree.com
+            Contact Us
           </a>
           . We look forward to hearing from you!
         </p>

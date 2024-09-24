@@ -112,12 +112,14 @@ function Page() {
 
         <h3 className="text-base text-foreground">11. Contact Information</h3>
         <p>
-          For any questions regarding these Terms, please contact us at{" "}
+          For any questions regarding these Terms, please contact us here:{" "}
           <a
-            href="mailto:info@aitherapistfree.com"
-            className="text-foreground hover:text-primary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScDAOGOXyWDaj3JNi21TDsqvoQRL493sdyC2aLpVdFv7gko3A/viewform"
+            className="text-sm font-medium text-primary hover:underline"
           >
-            info@aitherapistfree.com
+            Contact Us
           </a>
         </p>
       </div>
