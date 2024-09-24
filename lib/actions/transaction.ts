@@ -33,6 +33,7 @@ export async function checkoutPayment(userId: string | null) {
       buyerFirestoreId: userId || "",
     },
     mode: "subscription",
+    allow_promotion_codes: true,
     success_url:
       process.env.ENV_NODE === "development"
         ? "http://localhost:3000/agent"
