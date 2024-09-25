@@ -76,6 +76,7 @@ export function ChatTextarea({
   price,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isLimitDialogOpen, setIsLimitDialogOpen] = useState(false);
 
   let canSendMessage = true;
 
@@ -125,9 +126,12 @@ export function ChatTextarea({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !canSendMessage) {
       event.preventDefault();
-      form.handleSubmit(onSubmit)();
+      setIsLimitDialogOpen(true); // Open the dialog if the user cannot send messages
+    } else if (event.key === "Enter" && canSendMessage) {
+      event.preventDefault();
+      form.handleSubmit(onSubmit)(); // Submit the form if the user can send messages
     }
   };
 
@@ -166,11 +170,13 @@ export function ChatTextarea({
               monthlyLimit={monthlyLimit}
               price={price}
               hasPremium={hasPremium}
+              isLimitDialogOpen={isLimitDialogOpen}
+              setIsLimitDialogOpen={setIsLimitDialogOpen}
             />
           ) : (
             // Logto sign in dialog
             // <SignInDialog />
-            <AuthDialog buttonIcon={<FaChevronRight />} />
+            <AuthDialog buttonIcon={<FaChevronRight />} isTextarea={true} />
           )}
         </div>
       </form>
@@ -192,6 +198,8 @@ type SubmitFormButtonProps = {
   monthlyLimit: number;
   price: number;
   hasPremium: boolean;
+  isLimitDialogOpen: boolean;
+  setIsLimitDialogOpen: (value: boolean) => void;
 };
 
 function SubmitFormButton({
@@ -204,6 +212,8 @@ function SubmitFormButton({
   monthlyLimit,
   price,
   hasPremium,
+  isLimitDialogOpen,
+  setIsLimitDialogOpen,
 }: SubmitFormButtonProps) {
   const { closeSidebarOnMobile } = useSidebar();
   return (
@@ -223,7 +233,7 @@ function SubmitFormButton({
         </Button>
       ) : (
         // Show dialog if user has free account and reached the limit
-        <Dialog>
+        <Dialog open={isLimitDialogOpen} onOpenChange={setIsLimitDialogOpen}>
           <DialogTrigger>
             <Button size="icon" asChild>
               <div className="h-10 w-10">

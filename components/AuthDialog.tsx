@@ -18,9 +18,14 @@ import { ClassNameValue } from "tailwind-merge";
 type AuthDialogProps = {
   buttonIcon?: React.ReactNode;
   className?: ClassNameValue;
+  isTextarea?: boolean;
 };
 
-export function AuthDialog({ buttonIcon, className }: AuthDialogProps) {
+export function AuthDialog({
+  buttonIcon,
+  className,
+  isTextarea,
+}: AuthDialogProps) {
   const { isSignedIn, isLoaded } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -36,6 +41,23 @@ export function AuthDialog({ buttonIcon, className }: AuthDialogProps) {
       setOpen(false);
     }
   }, [isSignedIn, isLoaded]);
+
+  useEffect(() => {
+    if (!isTextarea) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        setOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isTextarea]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
