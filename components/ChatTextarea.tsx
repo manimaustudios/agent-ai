@@ -262,9 +262,9 @@ function SubmitFormButton({
                       have to limit free usage.
                     </span>
                     <span className="inline-block py-2">
-                      Subscribe to the unlimited plan for just ${price}/month to
-                      continue chatting. Cancel anytime and save 90-95% compared
-                      to a single human therapist session!
+                      Subscribe to the unlimited plan to continue chatting.
+                      Cancel anytime and save 90-95% compared to a single human
+                      therapist session!
                     </span>
                     <span className="inline-block py-2">
                       You can also come back in a few hours and chat for free.
