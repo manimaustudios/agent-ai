@@ -20,6 +20,7 @@ import { UserProfileDropdown } from "@/components/UserProfileDropdown";
 import { AuthDialog } from "@/components/AuthDialog";
 import { Button } from "@/components/ui/button";
 import { SignUpDialog } from "@/components/SignUpDialog";
+import ShareButtons from "@/components/ShareButtons";
 
 // export const runtime = "edge";
 
@@ -108,6 +109,7 @@ async function Page() {
   return (
     <>
       <Sidebar isAuthenticated={isAuthenticated ?? false} userId={userId}>
+        <ShareButtons />
         {isAuthenticated && (
           <SubscriptionStatus
             userId={userId}
@@ -116,7 +118,7 @@ async function Page() {
             hasPremium={hasPremium}
           />
         )}
-        <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2">
+        <div className="flex flex-col items-start gap-1">
           {/* Logto auth */}
           {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
           <div className="items flex justify-center gap-2">
@@ -126,7 +128,7 @@ async function Page() {
                 <Button variant="outline">Sign Out</Button>
               </SignOutButton>
             </SignedIn>
-            <ThemeToggle />
+            {isAuthenticated && <ThemeToggle />}
             {isAuthenticated && (
               <UserProfileDropdown
                 userId={userId}
@@ -136,10 +138,11 @@ async function Page() {
               />
             )}
           </div>
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-start justify-start gap-2">
             <SignedOut>
               <AuthDialog />
               <SignUpDialog />
+              <ThemeToggle />
             </SignedOut>
           </div>
         </div>

@@ -43,12 +43,6 @@ function Sidebar({ isAuthenticated, userId, children }: SidebarProps) {
           {/* server components */}
           {children}
         </div>
-        {/* <button
-          onClick={() => setIsSidebarOpen(false)}
-          className="absolute right-0 top-4 z-20 flex size-6 items-center justify-center rounded-l-full border-y border-l bg-background"
-        >
-          <FaChevronLeft className="size-4" />
-        </button> */}
       </div>
       <button
         onClick={() => setIsSidebarOpen(true)}
