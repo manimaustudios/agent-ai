@@ -14,7 +14,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Free Online AI Therapist Chatbot | Mental Health Support`",
+  title: "Free Online AI Therapist Chatbot | Mental Health Support",
   description:
     "Free therapy online with our AI therapist chatbot, designed to support your mental well-being and self-help journey. You're guidance for mental health.",
   openGraph: {

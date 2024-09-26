@@ -257,17 +257,15 @@ function SubmitFormButton({
                 ) : (
                   <>
                     <span className="inline-block py-2">
-                      You&#39;ve sent more than {messageLimit} messages in the
-                      last {hoursToWait} hours. To keep this service free, we
-                      have to limit free usage.
+                      You&#39;ve hit your free chat limit for the past{" "}
+                      {hoursToWait} hours! Unlock unlimited access by
+                      subscribing to our plan now and save 90-95% compared to a
+                      single therapist session.
                     </span>
                     <span className="inline-block py-2">
-                      Subscribe to the unlimited plan to continue chatting.
-                      Cancel anytime and save 90-95% compared to a single human
-                      therapist session!
-                    </span>
-                    <span className="inline-block py-2">
-                      You can also come back in a few hours and chat for free.
+                      Don&#39;t miss out on instant, 24/7 support whenever you
+                      need it! Or, if you prefer, come back in a few hours to
+                      continue chatting for free.
                     </span>
                   </>
                 )}
