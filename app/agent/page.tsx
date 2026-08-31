@@ -24,11 +24,11 @@ import ShareButtons from "@/components/ShareButtons";
 
 // export const runtime = "edge";
 
-export async function metadata(): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   // Logto auth
   // const { userId, userEmail } = await auth();
 
-  const { userId }: { userId: string | null } = auth();
+  const { userId }: { userId: string | null } = await auth();
   const user = await currentUser();
   const userEmail = user?.primaryEmailAddress?.emailAddress;
 
@@ -62,7 +62,7 @@ async function Page() {
   // Logto auth
   // const { userId, userEmail, isAuthenticated } = await auth();
 
-  const { userId }: { userId: string | null } = auth();
+  const { userId }: { userId: string | null } = await auth();
 
   const user = await currentUser();
 

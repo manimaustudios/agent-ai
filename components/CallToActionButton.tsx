@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaRegMessage } from "react-icons/fa6";
 
 import { Button } from "./ui/button";
@@ -9,10 +9,6 @@ import LoadingSpinner from "./LoadingSpinner";
 
 function CallToActionButton() {
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
 
   return (
     <Button asChild className="px-6 py-6" onClick={() => setIsLoading(true)}>

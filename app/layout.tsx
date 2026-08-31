@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Suspense } from "react";
 
+import PostHogPageView from "@/components/PostHogPageView";
 import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { PHProvider } from "@/lib/providers/PHProvider";
 import { SidebarProvider } from "@/lib/providers/SidebarProvider";
@@ -43,10 +43,6 @@ const jsonLd = {
   url: "https://www.aitherapistfree.com",
 };
 
-const PostHogPageView = dynamic(() => import("../components/PostHogPageView"), {
-  ssr: false,
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -62,20 +58,14 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <ClerkProvider
-              appearance={{
-                variables: {
-                  colorPrimary: "hsl(262.1 83.3% 57.8%)",
-                },
-              }}
-            >
-              <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-              />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <Suspense fallback={null}>
               <PostHogPageView />
-              <SidebarProvider>{children}</SidebarProvider>
-            </ClerkProvider>
+            </Suspense>
+            <SidebarProvider>{children}</SidebarProvider>
           </ThemeProvider>
         </body>
       </PHProvider>

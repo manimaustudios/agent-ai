@@ -36,6 +36,8 @@ export function AuthDialog({
     const isCallback = hash.includes("sso-callback");
 
     if (isCallback) {
+      // Clerk's hash callback is an external browser state synchronization.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOpen(true);
     } else if (isSignedIn) {
       setOpen(false);
@@ -72,8 +74,8 @@ export function AuthDialog({
           <SignIn
             routing="hash"
             signUpUrl="/sign-up"
-            afterSignInUrl="/agent"
-            afterSignUpUrl="/agent"
+            forceRedirectUrl="/agent"
+            signUpForceRedirectUrl="/agent"
           />
           <DialogDescription></DialogDescription>
         </DialogHeader>

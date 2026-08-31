@@ -50,6 +50,7 @@ type ChatTextareaProps = {
   monthlyLimit: number;
   currentPrompt: string;
   price: number;
+  setPendingAssistantText: (text: string | null) => void;
 };
 
 const ChatTextareaLimits = z.object({
@@ -74,9 +75,11 @@ export function ChatTextarea({
   monthlyLimit,
   currentPrompt,
   price,
+  setPendingAssistantText,
 }: ChatTextareaProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLimitDialogOpen, setIsLimitDialogOpen] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   let canSendMessage = true;
 
@@ -94,17 +97,46 @@ export function ChatTextarea({
     },
   });
 
-  const resetFormValues = async () => {
-    form.setValue("content", "");
+  const revealAssistantResponse = async (response: string) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPendingAssistantText(response);
+      return;
+    }
+
+    const characters = Array.from(response);
+    const duration = Math.min(3200, Math.max(700, characters.length * 14));
+    const frameDuration = 40;
+    const charactersPerFrame = Math.max(
+      1,
+      Math.ceil(characters.length / (duration / frameDuration)),
+    );
+
+    for (
+      let end = charactersPerFrame;
+      end < characters.length;
+      end += charactersPerFrame
+    ) {
+      setPendingAssistantText(characters.slice(0, end).join(""));
+      await new Promise((resolve) => window.setTimeout(resolve, frameDuration));
+    }
+
+    setPendingAssistantText(response);
   };
 
   const onSubmit = async (data: z.infer<typeof ChatTextareaLimits>) => {
-    if (!canSendMessage) return;
+    if (!canSendMessage || isLoading) return;
 
     setIsLoading(true);
-    const newQuestion = { type: "question", text: data.content };
+    setSubmitError(null);
+
+    const content = data.content.trim();
+    const newQuestion = { type: "question", text: content };
     const updatedHistoryWithQuestion = [...chatHistory, newQuestion];
+
+    // Clear the submitted draft and display it in the conversation immediately.
+    form.reset({ content: "" });
     setChatHistory(updatedHistoryWithQuestion, chatType, sessionId);
+    setPendingAssistantText("");
 
     const formattedChatHistory = getFormattedChatHistory(
       chatHistory,
@@ -112,20 +144,49 @@ export function ChatTextarea({
       currentPrompt,
     );
 
-    const response = await getAiResponse(data.content, formattedChatHistory);
+    try {
+      const response = await getAiResponse(content, formattedChatHistory);
+      await revealAssistantResponse(response);
 
-    const newAnswer = { type: "answer", text: response };
-    const updatedHistoryWithAnswer = [...updatedHistoryWithQuestion, newAnswer];
-    setChatHistory(updatedHistoryWithAnswer, chatType, sessionId);
+      const newAnswer = { type: "answer", text: response };
+      const updatedHistoryWithAnswer = [
+        ...updatedHistoryWithQuestion,
+        newAnswer,
+      ];
+      setChatHistory(updatedHistoryWithAnswer, chatType, sessionId);
+      setPendingAssistantText(null);
 
-    await resetFormValues();
-
-    await updateMsgAmount(userId, hasPremium);
-
-    setIsLoading(false);
+      try {
+        await updateMsgAmount(userId, hasPremium);
+      } catch {
+        setSubmitError(
+          "Your reply was delivered, but usage could not be updated. Refresh before sending another message.",
+        );
+      }
+    } catch {
+      setPendingAssistantText(null);
+      setSubmitError(
+        "The AI therapist could not respond. Please try sending your message again.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (
+      event.key !== "Enter" ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing
+    ) {
+      return;
+    }
+
+    if (isLoading) {
+      event.preventDefault();
+      return;
+    }
+
     if (event.key === "Enter" && !canSendMessage) {
       event.preventDefault();
       setIsLimitDialogOpen(true); // Open the dialog if the user cannot send messages
@@ -155,6 +216,14 @@ export function ChatTextarea({
                 />
               </FormControl>
               <FormMessage />
+              {submitError && (
+                <p
+                  className="text-sm font-medium text-destructive"
+                  role="alert"
+                >
+                  {submitError}
+                </p>
+              )}
             </FormItem>
           )}
         />

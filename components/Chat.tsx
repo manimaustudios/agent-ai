@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
@@ -45,6 +45,9 @@ function Chat({
   price,
 }: ChatProps) {
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+  const [pendingAssistantText, setPendingAssistantText] = useState<
+    string | null
+  >(null);
   const {
     chatHistory,
     setChatHistory,
@@ -82,7 +85,7 @@ function Chat({
 
   useEffect(() => {
     scrollToBottom(scrollAreaRef.current, true);
-  }, [chatHistory]);
+  }, [chatHistory, pendingAssistantText]);
 
   const handleStartNewChat = (
     chatType: string,
@@ -140,6 +143,24 @@ function Chat({
                   )}
                 </React.Fragment>
               ))}
+              {pendingAssistantText !== null && (
+                <div className="mr-auto inline-block max-w-[80%] rounded-md bg-secondary p-3 md:max-w-[65%]">
+                  {pendingAssistantText ? (
+                    <p>{pendingAssistantText}</p>
+                  ) : (
+                    <div
+                      className="flex h-6 items-center gap-1"
+                      role="status"
+                      aria-label="AI therapist is typing"
+                    >
+                      <span className="size-2 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.3s]" />
+                      <span className="size-2 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.15s]" />
+                      <span className="size-2 animate-bounce rounded-full bg-muted-foreground" />
+                      <span className="sr-only">AI therapist is typing</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </ScrollArea>
         ) : (
@@ -191,6 +212,7 @@ function Chat({
             monthlyLimit={monthlyLimit}
             currentPrompt={currentChatFromList?.prompt ?? ""}
             price={price}
+            setPendingAssistantText={setPendingAssistantText}
           />
         )}
       </div>

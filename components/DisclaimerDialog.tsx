@@ -22,6 +22,8 @@ function DisclaimerDialog() {
     const isCallback = hash.includes("sso-callback");
 
     if (!isCallback) {
+      // The initial dialog state depends on the client-only URL hash.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsOpen(true);
     } else {
       setIsOpen(false);

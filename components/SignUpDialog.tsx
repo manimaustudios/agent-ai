@@ -31,6 +31,8 @@ export function SignUpDialog({ buttonIcon, className }: SignUpDialogProps) {
     const isCallback = hash.includes("sso-callback");
 
     if (isCallback) {
+      // Clerk's hash callback is an external browser state synchronization.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOpen(true);
     } else if (isSignedIn) {
       setOpen(false);
@@ -54,8 +56,8 @@ export function SignUpDialog({ buttonIcon, className }: SignUpDialogProps) {
           <SignUp
             routing="hash"
             signInUrl="/sign-in"
-            afterSignInUrl="/agent"
-            afterSignUpUrl="/agent"
+            forceRedirectUrl="/agent"
+            signInForceRedirectUrl="/agent"
           />
           <DialogDescription></DialogDescription>
         </DialogHeader>

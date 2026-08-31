@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 
@@ -67,6 +68,8 @@ export function ChatProvider({ children }: ChatProviderProps) {
       localStorage.getItem("chat_sessions") || "[]",
     );
     if (storedSessions.length > 0) {
+      // Sessions are hydrated from the browser's external localStorage state.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessions(storedSessions);
     }
   }, []);
@@ -75,13 +78,6 @@ export function ChatProvider({ children }: ChatProviderProps) {
     // Save sessions to localStorage whenever they change
     localStorage.setItem("chat_sessions", JSON.stringify(sessions));
   }, [sessions]);
-
-  useEffect(() => {
-    // Load chat history from localStorage when current session changes
-    if (currentChatType && currentSessionId) {
-      loadChatHistory(currentChatType, currentSessionId);
-    }
-  }, [currentChatType, currentSessionId]);
 
   const setChatHistory = (
     messages: ChatMessage[],
@@ -99,7 +95,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
     }
   };
 
-  const loadChatHistory = (chatType: string, sessionId: string) => {
+  const loadChatHistory = useCallback((chatType: string, sessionId: string) => {
     const savedHistory = localStorage.getItem(`${chatType}-${sessionId}`);
     if (savedHistory) {
       setChatHistoryState(JSON.parse(savedHistory));
@@ -111,7 +107,16 @@ export function ChatProvider({ children }: ChatProviderProps) {
       setCurrentChatType(chatType); // Still set current chat if no history exists
       setCurrentSessionId(sessionId);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Load chat history from localStorage when current session changes.
+    if (currentChatType && currentSessionId) {
+      // Chat history is synchronized from the browser's external localStorage.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadChatHistory(currentChatType, currentSessionId);
+    }
+  }, [currentChatType, currentSessionId, loadChatHistory]);
 
   const deleteChatHistory = (chatType: string, sessionId: string) => {
     localStorage.removeItem(`${chatType}-${sessionId}`);
