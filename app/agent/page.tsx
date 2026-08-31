@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SignedIn, SignedOut, SignOutButton, UserButton } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 import Sidebar from "@/components/Sidebar";
@@ -122,12 +122,11 @@ async function Page() {
           {/* Logto auth */}
           {/* <AccesButton isAuthenticated={isAuthenticated} /> */}
           <div className="items flex justify-center gap-2">
-            <SignedIn>
-              {/* <UserButton /> */}
+            {isAuthenticated && (
               <SignOutButton>
                 <Button variant="outline">Sign Out</Button>
               </SignOutButton>
-            </SignedIn>
+            )}
             {isAuthenticated && <ThemeToggle />}
             {isAuthenticated && (
               <UserProfileDropdown
@@ -139,11 +138,13 @@ async function Page() {
             )}
           </div>
           <div className="flex items-start justify-start gap-2">
-            <SignedOut>
-              <AuthDialog />
-              <SignUpDialog />
-              <ThemeToggle />
-            </SignedOut>
+            {!isAuthenticated && (
+              <>
+                <AuthDialog />
+                <SignUpDialog />
+                <ThemeToggle />
+              </>
+            )}
           </div>
         </div>
       </Sidebar>
