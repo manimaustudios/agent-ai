@@ -1,30 +1,33 @@
 "use client";
 
-import { checkoutPayment } from "@/lib/actions/transaction";
 import { Button } from "./ui/button";
-import { useState } from "react";
-import LoadingSpinner from "./LoadingSpinner";
+import { Dialog, DialogTrigger } from "./ui/dialog";
+import PremiumOffer from "./PremiumOffer";
 
 type PaymentButtonProps = {
   userId: string | null;
   cta?: string;
+  monthlyLimit?: number;
+  monthlySubscriber?: boolean;
 };
 
-function PaymentButton({ userId, cta }: PaymentButtonProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handlePayment = async () => {
-    setIsLoading(true);
-    await checkoutPayment(userId);
-    setIsLoading(false);
-  };
+function PaymentButton({
+  userId,
+  cta,
+  monthlyLimit,
+  monthlySubscriber,
+}: PaymentButtonProps) {
   return (
-    <div className="flex items-center justify-start gap-3">
-      <Button onClick={() => handlePayment()}>
-        {cta ? cta : "Get Premium"}
-      </Button>
-      {isLoading && <LoadingSpinner className="text-primary" />}
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button type="button">{cta || "Get Premium"}</Button>
+      </DialogTrigger>
+      <PremiumOffer
+        userId={userId}
+        monthlyLimit={monthlyLimit}
+        monthlySubscriber={monthlySubscriber}
+      />
+    </Dialog>
   );
 }
 

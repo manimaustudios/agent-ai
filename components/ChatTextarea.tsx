@@ -20,7 +20,6 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -28,9 +27,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import LoadingSpinner from "./LoadingSpinner";
 import { getAiResponse } from "@/lib/actions/openai";
-import SignInDialog from "./SignInDialog";
-import { updateMsgAmount } from "@/lib/actions/users";
-import PaymentButton from "./PaymentButton";
+import PremiumOffer from "./PremiumOffer";
 import { getFormattedChatHistory } from "@/lib/utils";
 import { AuthDialog } from "./AuthDialog";
 import { useSidebar } from "@/lib/providers/SidebarProvider";
@@ -155,14 +152,6 @@ export function ChatTextarea({
       ];
       setChatHistory(updatedHistoryWithAnswer, chatType, sessionId);
       setPendingAssistantText(null);
-
-      try {
-        await updateMsgAmount(userId, hasPremium);
-      } catch {
-        setSubmitError(
-          "Your reply was delivered, but usage could not be updated. Refresh before sending another message.",
-        );
-      }
     } catch {
       setPendingAssistantText(null);
       setSubmitError(
@@ -303,53 +292,35 @@ function SubmitFormButton({
       ) : (
         // Show dialog if user has free account and reached the limit
         <Dialog open={isLimitDialogOpen} onOpenChange={setIsLimitDialogOpen}>
-          <DialogTrigger>
-            <Button size="icon" asChild>
-              <div className="h-10 w-10">
-                <FaChevronRight className="h-4 w-4" />
-              </div>
+          <DialogTrigger asChild>
+            <Button type="button" size="icon" aria-label="View Premium plans">
+              <FaChevronRight className="h-4 w-4" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md py-10">
-            <DialogHeader className="space-y-6">
-              <DialogTitle className="text-center">
-                You&#39;ve been chatting a lot.
-              </DialogTitle>
-              <DialogDescription className="space-y-3 text-center">
-                {isMonthlyLimitReached ? (
-                  <>
-                    <span>
-                      You&#39;ve sent more than {monthlyLimit} messages in the
-                      last 30 days.
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="inline-block py-2">
-                      You&#39;ve hit your free chat limit. Unlock unlimited
-                      access by subscribing to our plan now and save 90-95%
-                      compared to a single therapist session.
-                    </span>
-                    <span className="inline-block py-2">
-                      Don&#39;t miss out on instant, 24/7 support whenever you
-                      need it or, if you prefer, come back in a few hours to
-                      continue chatting for free.
-                    </span>
-                  </>
-                )}
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="mx-auto flex-row gap-2 pt-3">
+          {hasPremium ? (
+            <DialogContent className="max-w-md rounded-xl">
+              <DialogHeader>
+                <DialogTitle>
+                  Your Premium message allowance is used
+                </DialogTitle>
+                <DialogDescription>
+                  Your plan includes {monthlyLimit.toLocaleString()} messages
+                  per 30-day period. Your saved conversations remain available.
+                </DialogDescription>
+              </DialogHeader>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
-                  Cancel
+                  Close
                 </Button>
               </DialogClose>
-              {!isMonthlyLimitReached && (
-                <PaymentButton userId={userId} cta="Subscribe" />
-              )}
-            </DialogFooter>
-          </DialogContent>
+            </DialogContent>
+          ) : (
+            <PremiumOffer
+              userId={userId}
+              exhausted
+              monthlyLimit={monthlyLimit}
+            />
+          )}
         </Dialog>
       )}
     </>

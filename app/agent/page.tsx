@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import CheckoutStatus from "@/components/CheckoutStatus";
 import { SignOutButton } from "@clerk/nextjs";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
@@ -103,7 +105,12 @@ async function Page() {
 
   const { chats } = await getAllChats();
 
+  const monthlyPeriodExpired =
+    !userData?.firstMsgTimeMonthly ||
+    Date.now() / 1000 - userData.firstMsgTimeMonthly.seconds >=
+      30 * 24 * 60 * 60;
   const isMonthlyLimitReached =
+    !monthlyPeriodExpired &&
     (userData?.msgAmountMonthly ?? 0) >= msgAmountLimitMonthly;
 
   return (
@@ -116,6 +123,7 @@ async function Page() {
             msgAmountLimit={msgAmountLimit}
             status={userData?.status ?? ""}
             hasPremium={hasPremium}
+            monthlyLimit={msgAmountLimitMonthly}
           />
         )}
         <div className="flex flex-col items-start gap-1">
@@ -134,6 +142,9 @@ async function Page() {
                 status={userData?.status}
                 userEmail={userEmail ?? ""}
                 hasPremium={hasPremium}
+                lifetime={userData?.lifetimeStatus === "active"}
+                cancelAtPeriodEnd={userData?.cancelAtPeriodEnd}
+                monthlyLimit={msgAmountLimitMonthly}
               />
             )}
           </div>
@@ -163,6 +174,9 @@ async function Page() {
         chatList={chats}
       />
       {!isAuthenticated && <DisclaimerDialog />}
+      <Suspense fallback={null}>
+        <CheckoutStatus />
+      </Suspense>
     </>
   );
 }

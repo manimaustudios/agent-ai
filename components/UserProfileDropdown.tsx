@@ -18,6 +18,9 @@ type UserProfileDropdownProps = {
   status?: string;
   userEmail?: string;
   hasPremium: boolean;
+  lifetime?: boolean;
+  cancelAtPeriodEnd?: boolean;
+  monthlyLimit?: number;
 };
 
 export function UserProfileDropdown({
@@ -25,15 +28,22 @@ export function UserProfileDropdown({
   status,
   userEmail,
   hasPremium,
+  lifetime = false,
+  cancelAtPeriodEnd = false,
+  monthlyLimit,
 }: UserProfileDropdownProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCancellSubscription = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       await cancelSubscription(userId);
     } catch (error) {
-      console.log("error cancelling subscription: ", error);
+      setError(
+        "Cancellation could not be completed. Please try again or contact support.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -66,15 +76,36 @@ export function UserProfileDropdown({
         <div className="text-sm">
           Plan:{" "}
           <span className="ml-1 rounded-md bg-slate-400 px-1 font-semibold text-primary">
-            {hasPremium ? "Premium" : "Free"}
+            {lifetime ? "Lifetime Premium" : hasPremium ? "Premium" : "Free"}
           </span>
         </div>
 
-        {status === "active" ? (
+        {error && (
+          <p className="text-xs text-destructive" role="alert">
+            {error}
+          </p>
+        )}
+        {!lifetime && hasPremium && (
+          <PaymentButton
+            userId={userId}
+            cta="Switch to lifetime"
+            monthlyLimit={monthlyLimit}
+            monthlySubscriber
+          />
+        )}
+        {lifetime ? (
+          <p className="text-xs">Lifetime access. No recurring payments.</p>
+        ) : cancelAtPeriodEnd && hasPremium ? (
+          <p className="text-xs">
+            Renewal cancelled. Premium remains available until your paid period
+            ends.
+          </p>
+        ) : status === "active" ? (
           <div className="flex items-center justify-start gap-2">
             <Button
               variant="secondary"
               onClick={() => handleCancellSubscription()}
+              disabled={isLoading}
             >
               Cancel Subscription
             </Button>
@@ -83,7 +114,7 @@ export function UserProfileDropdown({
         ) : hasPremium ? (
           <p className="text-xs">*Your subscription is cancelled</p>
         ) : (
-          <PaymentButton userId={userId} />
+          <PaymentButton userId={userId} monthlyLimit={monthlyLimit} />
         )}
       </DropdownMenuContent>
     </DropdownMenu>

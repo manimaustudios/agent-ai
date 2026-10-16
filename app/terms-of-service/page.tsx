@@ -8,7 +8,7 @@ function Page() {
       <Navbar />
       <div className="mx-auto max-w-screen-md space-y-4 pb-10 pt-6 text-sm text-muted-foreground">
         <h2 className="text-lg text-foreground">Terms of Service</h2>
-        <p>Effective Date: September 1, 2024</p>
+        <p>Effective Date: October 16, 2026</p>
 
         <h3 className="text-base text-foreground">1. Acceptance of Terms</h3>
         <p>
@@ -73,6 +73,31 @@ function Page() {
         <p>
           c. By using the Service, you consent to the processing and temporary
           classification of your messages for these purposes.
+        </p>
+
+        <h3 id="premium" className="scroll-mt-6 text-base text-foreground">
+          Premium plans and fair use
+        </h3>
+        <p>
+          Free accounts receive the one-time allowance of user messages shown in
+          the app. AI replies do not count toward that allowance. It does not
+          replenish with time, new conversations, or cancellation of a paid
+          plan.
+        </p>
+        <p>
+          Monthly Premium renews monthly until cancelled. Cancellation stops
+          future renewals and preserves access until the paid period ends.
+          Lifetime Premium is a one-time payment for the current Premium chat
+          features for the operating life of this service. It does not include
+          separately sold future products or guarantee that the service will
+          operate for any particular length of time.
+        </p>
+        <p>
+          Both plans are for one person and include the message allowance shown
+          before purchase per 30-day period. Bots, automated messaging, account
+          sharing, and resale are not permitted. Saved conversations remain
+          readable when a message allowance is exhausted. A full refund or
+          payment dispute can remove access associated with that payment.
         </p>
 
         <h3 className="text-base text-foreground">7. Termination</h3>

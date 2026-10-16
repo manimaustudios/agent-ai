@@ -13,7 +13,10 @@ function ProgressBar({ amount, limit }: ProgressBarProps) {
   const [progress, setProgress] = useState(limit);
 
   useEffect(() => {
-    const timer = setTimeout(() => setProgress((amount / limit) * 100), 500);
+    const timer = setTimeout(
+      () => setProgress(limit > 0 ? Math.min(100, (amount / limit) * 100) : 0),
+      500,
+    );
     return () => clearTimeout(timer);
   }, [amount, limit]);
 
@@ -21,9 +24,7 @@ function ProgressBar({ amount, limit }: ProgressBarProps) {
     <div>
       <Progress value={progress} className="h-2 w-[80%]" />
       <div className="mt-1 text-sm font-medium">
-        <p>
-          Used: {amount} / {limit}
-        </p>
+        <p>Free messages: {Math.max(0, limit - amount)} remaining</p>
       </div>
     </div>
   );

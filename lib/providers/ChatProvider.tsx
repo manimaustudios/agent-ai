@@ -58,26 +58,51 @@ interface ChatProviderProps {
 
 export function ChatProvider({ children }: ChatProviderProps) {
   const [chatHistory, setChatHistoryState] = useState<ChatMessage[]>([]);
+  const [hydrated, setHydrated] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentChatType, setCurrentChatType] = useState<string>("");
   const [currentSessionId, setCurrentSessionId] = useState<string>("");
 
   useEffect(() => {
-    // Load existing sessions from localStorage on mount
-    const storedSessions = JSON.parse(
-      localStorage.getItem("chat_sessions") || "[]",
-    );
-    if (storedSessions.length > 0) {
-      // Sessions are hydrated from the browser's external localStorage state.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSessions(storedSessions);
+    try {
+      const stored = JSON.parse(localStorage.getItem("chat_sessions") || "[]");
+      if (Array.isArray(stored)) {
+        const valid = stored.filter(
+          (session) =>
+            session &&
+            typeof session.sessionId === "string" &&
+            typeof session.chatType === "string",
+        );
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSessions(valid);
+        const active = localStorage.getItem("chat_active_session");
+        const last =
+          valid.find((session) => session.sessionId === active) || valid.at(-1);
+        if (last) {
+          const history = JSON.parse(
+            localStorage.getItem(`${last.chatType}-${last.sessionId}`) || "[]",
+          );
+          setCurrentChatType(last.chatType);
+          setCurrentSessionId(last.sessionId);
+          if (Array.isArray(history)) setChatHistoryState(history);
+        }
+      }
+    } catch {
+      // Unavailable or invalid browser storage must not stop the chat UI.
     }
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
-    // Save sessions to localStorage whenever they change
-    localStorage.setItem("chat_sessions", JSON.stringify(sessions));
-  }, [sessions]);
+    if (!hydrated) return;
+    try {
+      localStorage.setItem("chat_sessions", JSON.stringify(sessions));
+      if (currentSessionId)
+        localStorage.setItem("chat_active_session", currentSessionId);
+    } catch {
+      // Browser storage can be unavailable or full.
+    }
+  }, [sessions, currentSessionId, hydrated]);
 
   const setChatHistory = (
     messages: ChatMessage[],

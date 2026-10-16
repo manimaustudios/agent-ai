@@ -9,7 +9,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { getSettings } from "./settings";
+import { hasPremiumAccess } from "@/lib/access";
 import { revalidatePath } from "next/cache";
 
 type User = {
@@ -22,6 +22,9 @@ type User = {
   firstMsgTimeMonthly?: Timestamp;
   msgAmountMonthly: number;
   currentChatId?: string;
+  freeMessagesUsed?: number;
+  lifetimeStatus?: string;
+  cancelAtPeriodEnd?: boolean;
 };
 
 export async function getUserDocument(userId: string): Promise<User | null> {
@@ -85,125 +88,25 @@ export async function hasLimitLeft(
   userId: string | null,
   userData: User | null,
   msgAmountLimit: number,
-  hoursToWait: number,
-  msgAmountLimitMonthly: number,
+  _hoursToWait: number,
+  _msgAmountLimitMonthly: number,
 ) {
-  if (!userId) return false;
-  if (!userData) return false;
-
-  const now = Timestamp.now();
-  const userDocRef = doc(db, "users", userId);
-
-  // Check if user daily message limit can be reset
-  if (userData?.firstMsgTime) {
-    const timeDiff = now.seconds - userData.firstMsgTime.seconds;
-    const hoursPassed = timeDiff / 3600; // convert seconds to hours
-
-    // Reset msgAmount when daily time limit is reached
-    if (hoursPassed >= hoursToWait) {
-      await updateDoc(userDocRef, {
-        msgAmount: 0,
-      });
-
-      revalidatePath("/");
-      return true;
-    }
-  }
-
-  // Check if user montly message limit can be reset
-  if (userData?.firstMsgTimeMonthly) {
-    const timeDiff = now.seconds - userData.firstMsgTimeMonthly.seconds;
-    const hoursPassed = timeDiff / 3600; // convert seconds to hours
-
-    // Reset msgAmountMonthly when monthly time limit is reached
-    if (hoursPassed >= 720) {
-      await updateDoc(userDocRef, {
-        msgAmountMonthly: 0,
-      });
-
-      revalidatePath("/agent");
-      return true;
-    }
-  }
-
-  // Check if user has reached the message limit for the day
-  if (userData && userData.msgAmount >= msgAmountLimit) {
-    return false;
-  }
-
-  // Check if user has reached the message limit for the month
-  if (userData && userData.msgAmountMonthly >= msgAmountLimitMonthly) {
-    return false;
-  }
-
-  return true;
-}
-
-export async function updateMsgAmount(
-  userId: string | null,
-  hasPremium: boolean,
-) {
-  if (!userId) return;
-
-  const userData = await getUserDocument(userId);
-  const { msgAmountLimit } = await getSettings();
-
-  const userDocRef = doc(db, "users", userId);
-  if (userData && userData.msgAmount <= msgAmountLimit) {
-    await updateDoc(userDocRef, {
-      msgAmount:
-        hasPremium || userData.msgAmount === msgAmountLimit
-          ? userData.msgAmount
-          : userData.msgAmount + 1,
-      msgAmountMonthly: userData.msgAmountMonthly + 1,
-      firstMsgTime:
-        userData.msgAmount === 0 ? Timestamp.now() : userData.firstMsgTime,
-      firstMsgTimeMonthly:
-        userData.msgAmountMonthly === 0
-          ? Timestamp.now()
-          : userData.firstMsgTimeMonthly,
-    });
-  }
-  revalidatePath("/agent");
+  return Boolean(
+    userId && userData && (userData.freeMessagesUsed || 0) < msgAmountLimit,
+  );
 }
 
 export async function hasPremiumPlan(
   userId: string | null,
   userData: User | null,
 ) {
-  if (!userId) return false;
-
-  try {
-    if (userData?.status === "active") return true;
-    if (!userData?.subscriptionId) return false;
-
-    const subDocRef = doc(db, "subscriptions", userData.subscriptionId);
-    const subDocSnap = await getDoc(subDocRef);
-
-    if (!subDocSnap.exists()) {
-      return false; // No subscription found
-    }
-
-    const subData = subDocSnap.data();
-    const nextBillingDate = subData?.nextBillingDate;
-
-    if (!nextBillingDate) {
-      return false; // No billing date, subscription is invalid
-    }
-
-    const now = new Date();
-    const billingDate = new Date(nextBillingDate);
-
-    // Next billing date is in the future, subscription is active
-    if (billingDate > now) {
-      return true;
-    }
-
-    return false; // Subscription is expired
-  } catch (error) {
-    console.log("Error checking premium plan:", error);
-    return false;
-  }
+  if (!userId || !userData) return false;
+  if (userData.lifetimeStatus === "active") return true;
+  if (!userData.subscriptionId) return false;
+  const snapshot = await getDoc(
+    doc(db, "subscriptions", userData.subscriptionId),
+  );
+  return hasPremiumAccess(userData, snapshot.data());
 }
 
 export async function updateCurrentChatId(

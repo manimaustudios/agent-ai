@@ -3,7 +3,8 @@ import Stripe from "stripe";
 import {
   handleCheckoutSessionCompleted,
   handleSubscriptionEvent,
-} from "@/lib/actions/transaction";
+  handleLifetimeChargeEvent,
+} from "@/lib/billing";
 
 // export const runtime = "edge";
 
@@ -21,12 +22,16 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
   } catch (err) {
-    return NextResponse.json({ message: "Webhook error", error: err });
+    return NextResponse.json(
+      { message: "Invalid webhook signature" },
+      { status: 400 },
+    );
   }
 
   try {
     switch (event.type) {
       case "checkout.session.completed":
+      case "checkout.session.async_payment_succeeded":
         await handleCheckoutSessionCompleted(
           event.data.object as Stripe.Checkout.Session,
         );
@@ -40,11 +45,21 @@ export async function POST(request: Request) {
         await handleSubscriptionEvent(event);
         break;
 
+      case "charge.refunded":
+      case "charge.dispute.created":
+      case "charge.dispute.closed":
+        await handleLifetimeChargeEvent(event);
+        break;
+
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
   } catch (error) {
     console.error("Error handling event:", error);
+    return NextResponse.json(
+      { message: "Webhook processing failed" },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ message: "OK" });

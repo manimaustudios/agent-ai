@@ -2,6 +2,7 @@
 
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { FREE_MESSAGE_ALLOWANCE } from "@/lib/plans";
 
 interface Settings {
   msgAmountLimit: number;
@@ -15,13 +16,22 @@ export async function getSettings(): Promise<Settings> {
   try {
     const userDocSnap = await getDoc(userDocRef);
     if (userDocSnap.exists()) {
-      return userDocSnap.data() as Settings;
+      const settings = userDocSnap.data();
+      const allowance = settings.msgAmountLimit;
+      return {
+        ...settings,
+        msgAmountLimit:
+          Number.isInteger(allowance) && allowance >= 0
+            ? allowance
+            : FREE_MESSAGE_ALLOWANCE,
+        hoursToWait: 0,
+      } as Settings;
     }
   } catch (error) {
     console.log("Error fetching settings:", error);
   }
   return {
-    msgAmountLimit: 0,
+    msgAmountLimit: FREE_MESSAGE_ALLOWANCE,
     hoursToWait: 0,
     msgAmountLimitMonthly: 0,
     price: 0,

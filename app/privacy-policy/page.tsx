@@ -22,12 +22,13 @@ function Page() {
           potentially your profile photo from your Google account.
         </p>
 
-        <h3 className="text-base text-foreground">2. Subscription Payments</h3>
+        <h3 className="text-base text-foreground">2. Premium Payments</h3>
         <p>
           a. <strong>Payment Processing</strong>: We use Stripe to process
-          subscription payments. When you subscribe, we collect payment details
-          such as your credit card information, billing address, and other
-          necessary information to process your payment.
+          monthly subscription and one-time lifetime payments. When you purchase
+          Premium, Stripe collects payment details such as your credit card
+          information, billing address, and other necessary information to
+          process your payment.
         </p>
         <p>
           b. <strong>Payment Information Security</strong>: All payment
@@ -58,8 +59,8 @@ function Page() {
         </p>
         <p>
           d. <strong>Payment Processing</strong>: Information collected for
-          subscription payments is used solely for processing payments and
-          managing your subscription.
+          monthly subscription and one-time lifetime payments is used solely for
+          processing payments and managing your subscription.
         </p>
 
         <h3 className="text-base text-foreground">4. Data Storage</h3>
