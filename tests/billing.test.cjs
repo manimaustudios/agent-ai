@@ -275,8 +275,14 @@ test("checkout rejects spoofed account IDs", async () => {
 test("lifetime uses one-time checkout; monthly stays recurring", async () => {
   const h = harness();
   const actions = h.load("lib/actions/transaction.ts");
-  await assert.rejects(actions.checkoutPayment("u1", "lifetime"), /REDIRECT:/);
-  await assert.rejects(actions.checkoutPayment("u1", "monthly"), /REDIRECT:/);
+  assert.equal(
+    await actions.checkoutPayment("u1", "lifetime"),
+    "https://checkout.stripe.com/test",
+  );
+  assert.equal(
+    await actions.checkoutPayment("u1", "monthly"),
+    "https://checkout.stripe.com/test",
+  );
   assert.equal(h.calls[0].mode, "payment");
   assert.equal(h.calls[1].mode, "subscription");
   assert.equal(h.calls[0].payment_intent_data.metadata.buyerFirestoreId, "u1");

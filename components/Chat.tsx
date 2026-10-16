@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
@@ -31,6 +31,24 @@ type ChatProps = {
   chatList: ChatSettings[];
   price: number;
 };
+
+// Pending-response updates do not need to render every saved message again.
+const MessageHistory = memo(function MessageHistory({
+  messages,
+}: {
+  messages: { type: string; text: string }[];
+}) {
+  return messages.map((item, i) =>
+    item.type && item.text ? (
+      <p
+        key={`text-${i}`}
+        className={`${item.type === "question" ? "ml-auto" : "mr-auto"} inline-block max-w-[80%] rounded-md bg-secondary p-3 md:max-w-[65%]`}
+      >
+        {item.text}
+      </p>
+    ) : null,
+  );
+});
 
 function Chat({
   isAuthenticated,
@@ -128,21 +146,7 @@ function Chat({
               ref={scrollAreaRef}
               className="flex flex-col gap-8 overflow-y-auto whitespace-pre-line"
             >
-              {chatHistory.map((item, i) => (
-                <React.Fragment key={`text-${i}`}>
-                  {item.type && item.text && (
-                    <p
-                      className={`${
-                        item.type === "question"
-                          ? "ml-auto bg-secondary"
-                          : "mr-auto bg-secondary"
-                      } inline-block max-w-[80%] rounded-md p-3 md:max-w-[65%]`}
-                    >
-                      {item.text}
-                    </p>
-                  )}
-                </React.Fragment>
-              ))}
+              <MessageHistory messages={chatHistory} />
               {pendingAssistantText !== null && (
                 <div className="mr-auto inline-block max-w-[80%] rounded-md bg-secondary p-3 md:max-w-[65%]">
                   {pendingAssistantText ? (

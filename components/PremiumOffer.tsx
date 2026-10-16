@@ -36,7 +36,8 @@ export default function PremiumOffer({
     setLoading(true);
     setError(null);
     try {
-      await checkoutPayment(userId, plan);
+      const checkoutUrl = await checkoutPayment(userId, plan);
+      window.location.assign(checkoutUrl);
     } catch {
       setError(
         "Checkout could not be opened. Please try again or contact support.",

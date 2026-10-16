@@ -1,7 +1,6 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -86,7 +85,7 @@ export async function checkoutPayment(
     cancel_url: `${baseUrl}/agent`,
   });
   if (!session.url) throw new Error("Checkout could not be opened.");
-  redirect(session.url);
+  return session.url;
 }
 
 export async function cancelSubscription(requestedUserId: string | null) {

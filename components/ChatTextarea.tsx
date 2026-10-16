@@ -1,20 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useId, useRef, useState } from "react";
 import * as z from "zod";
 import { FaChevronRight } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import {
   Dialog,
   DialogClose,
@@ -77,6 +67,10 @@ export function ChatTextarea({
   const [isLoading, setIsLoading] = useState(false);
   const [isLimitDialogOpen, setIsLimitDialogOpen] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const inputId = useId();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const sendingRef = useRef(false);
 
   let canSendMessage = true;
 
@@ -87,63 +81,40 @@ export function ChatTextarea({
     canSendMessage = false;
   }
 
-  const form = useForm<z.infer<typeof ChatTextareaLimits>>({
-    resolver: zodResolver(ChatTextareaLimits),
-    defaultValues: {
-      content: "",
-    },
-  });
-
-  const revealAssistantResponse = async (response: string) => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setPendingAssistantText(response);
+  const onSubmit = async () => {
+    if (!isAuthenticated || !canSendMessage || sendingRef.current) return;
+    const parsed = ChatTextareaLimits.safeParse({
+      content: textareaRef.current?.value.trim() ?? "",
+    });
+    if (!parsed.success) {
+      setValidationError(parsed.error.issues[0].message);
       return;
     }
 
-    const characters = Array.from(response);
-    const duration = Math.min(3200, Math.max(700, characters.length * 14));
-    const frameDuration = 40;
-    const charactersPerFrame = Math.max(
-      1,
-      Math.ceil(characters.length / (duration / frameDuration)),
-    );
-
-    for (
-      let end = charactersPerFrame;
-      end < characters.length;
-      end += charactersPerFrame
-    ) {
-      setPendingAssistantText(characters.slice(0, end).join(""));
-      await new Promise((resolve) => window.setTimeout(resolve, frameDuration));
-    }
-
-    setPendingAssistantText(response);
-  };
-
-  const onSubmit = async (data: z.infer<typeof ChatTextareaLimits>) => {
-    if (!canSendMessage || isLoading) return;
-
+    sendingRef.current = true;
     setIsLoading(true);
     setSubmitError(null);
+    setValidationError(null);
 
-    const content = data.content.trim();
+    const content = parsed.data.content;
     const newQuestion = { type: "question", text: content };
     const updatedHistoryWithQuestion = [...chatHistory, newQuestion];
 
     // Clear the submitted draft and display it in the conversation immediately.
-    form.reset({ content: "" });
-    setChatHistory(updatedHistoryWithQuestion, chatType, sessionId);
+    if (textareaRef.current) textareaRef.current.value = "";
     setPendingAssistantText("");
 
-    const formattedChatHistory = getFormattedChatHistory(
-      chatHistory,
-      newQuestion,
-      currentPrompt,
-    );
-
     try {
+      // Let the browser paint submission feedback before serializing history,
+      // writing browser storage, and dispatching the server action.
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 0));
+      setChatHistory(updatedHistoryWithQuestion, chatType, sessionId);
+      const formattedChatHistory = getFormattedChatHistory(
+        chatHistory,
+        newQuestion,
+        currentPrompt,
+      );
       const response = await getAiResponse(content, formattedChatHistory);
-      await revealAssistantResponse(response);
 
       const newAnswer = { type: "answer", text: response };
       const updatedHistoryWithAnswer = [
@@ -158,6 +129,7 @@ export function ChatTextarea({
         "The AI therapist could not respond. Please try sending your message again.",
       );
     } finally {
+      sendingRef.current = false;
       setIsLoading(false);
     }
   };
@@ -181,41 +153,43 @@ export function ChatTextarea({
       setIsLimitDialogOpen(true); // Open the dialog if the user cannot send messages
     } else if (event.key === "Enter" && canSendMessage) {
       event.preventDefault();
-      form.handleSubmit(onSubmit)(); // Submit the form if the user can send messages
+      void onSubmit();
     }
   };
 
   return (
-    <Form {...form}>
+    <>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(event) => {
+          event.preventDefault();
+          void onSubmit();
+        }}
         className="relative mb-2 mt-4 w-full max-w-full space-y-6"
       >
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem className="">
-              <FormControl>
-                <Textarea
-                  className="h-24 resize-none pr-16 text-base"
-                  placeholder="Type your message"
-                  {...field}
-                  onKeyDown={handleKeyDown}
-                />
-              </FormControl>
-              <FormMessage />
-              {submitError && (
-                <p
-                  className="text-sm font-medium text-destructive"
-                  role="alert"
-                >
-                  {submitError}
-                </p>
-              )}
-            </FormItem>
+        <div className="space-y-2">
+          <Textarea
+            ref={textareaRef}
+            id={inputId}
+            name="content"
+            aria-label="Your message"
+            aria-invalid={!!validationError}
+            aria-describedby={
+              validationError || submitError ? `${inputId}-error` : undefined
+            }
+            className="h-24 resize-none pr-16 text-base"
+            placeholder="Type your message"
+            onKeyDown={handleKeyDown}
+          />
+          {(validationError || submitError) && (
+            <p
+              id={`${inputId}-error`}
+              className="text-sm font-medium text-destructive"
+              role="alert"
+            >
+              {validationError || submitError}
+            </p>
           )}
-        />
+        </div>
         <div className="absolute right-3 top-5 flex items-center gap-3">
           {isAuthenticated ? (
             <SubmitFormButton
@@ -242,7 +216,7 @@ export function ChatTextarea({
         You are chatting with AI Therapist. AI can make mistakes. This is not a
         medical advice.
       </p>
-    </Form>
+    </>
   );
 }
 
