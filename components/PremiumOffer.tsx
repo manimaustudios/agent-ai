@@ -19,7 +19,6 @@ import LoadingSpinner from "./LoadingSpinner";
 export default function PremiumOffer({
   userId,
   exhausted = false,
-  monthlyLimit,
   monthlySubscriber = false,
 }: {
   userId: string | null;
@@ -126,9 +125,7 @@ export default function PremiumOffer({
 
       <div className="space-y-1 text-center text-xs leading-relaxed text-muted-foreground">
         <p>All AI chat companions included.</p>
-        {monthlyLimit !== undefined && (
-          <p>{monthlyLimit.toLocaleString()} messages per 30-day period.</p>
-        )}
+        <p>Unlimited messages.</p>
       </div>
       <div className="space-y-2">
         {error && (
